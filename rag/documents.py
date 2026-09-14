@@ -62,8 +62,11 @@ def load_documents(path: Path = PROCESSED_PATH) -> list[Document]:
 if __name__ == "__main__":
     documents = load_documents()
     print(f"{len(documents)} documents construits\n")
+
+    # Visualisation d'un document
     print(documents[0].page_content)
     print("\nMétadonnées :", documents[0].metadata)
 
+    # Statistiques
     lengths = sorted(len(doc.page_content) for doc in documents)
     print(f"\nLongueur des textes : médiane {lengths[len(lengths) // 2]}, max {lengths[-1]} caractères")

@@ -23,3 +23,22 @@ uv run python scripts/check_env.py
 ```
 
 Le script réalise un test d'import des briques principales (Faiss, LangChain, Mistral).
+
+## Préparation des données
+
+```bash
+# Collecte des événements Open Agenda de Toulouse -> data/raw/
+uv run python -m rag.collect
+# Nettoyage -> data/processed/
+uv run python -m rag.preprocess
+# Aperçu des documents à vectoriser
+uv run python -m rag.documents
+```
+
+L'analyse exploratoire qui justifie ces choix est dans `scripts/eda_openagenda.ipynb`.
+
+## Tests
+
+```bash
+uv run pytest
+```
