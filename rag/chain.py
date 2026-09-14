@@ -60,6 +60,15 @@ def weekend_of(today: date) -> tuple[date, date]:
     saturday = today + timedelta(days=5 - today.weekday())
     return saturday, saturday + timedelta(days=1)
 
+def unique_events(documents: list[Document], k: int) -> list[Document]:
+    """Garde le chunk le plus pertinent de chaque événement (par uid), jusqu'à k événements."""
+    best = {}
+    for doc in documents:
+        best.setdefault(doc.metadata["uid"], doc)
+        if len(best) == k:
+            break
+    return list(best.values())
+
 def format_context(documents: list[Document]) -> str:
     """Assemble les documents trouvés en un texte numéroté pour le prompt."""
     return "\n\n".join(f"[{i}] {doc.page_content}" for i, doc in enumerate(documents, start=1))
@@ -71,18 +80,23 @@ class RAG:
         self.index = load_index(INDEX_DIR / index_name)
         self.chain = PROMPT | ChatMistralAI(model=LLM_MODEL, temperature=0)
 
+    def retrieve(self, question: str, today: date) -> list[Document]:
+        """Recherche les TOP_K événements non terminés les plus proches de la question."""
+        # Recherche vectorielle sur FETCH_K candidats, filtre des événements terminés
+        candidates = self.index.similarity_search(
+            question, k=FETCH_K, fetch_k=FETCH_K,
+            filter=lambda metadata: metadata["last_date"][:10] >= today.isoformat(),
+        )
+        # Index découpé : plusieurs chunks d'un même événement peuvent remonter
+        return unique_events(candidates, TOP_K)
+
     def ask(self, question: str, today: date | None = None) -> dict:
         """Répond à une question et renvoie la réponse avec les métadonnées des événements utilisés.
 
         today : date de référence (date du jour par défaut, fixée pour rejouer une évaluation).
         """
         today = today or date.today()
-
-        # Recherche vectorielle puis filtre : on ne garde que les événements non terminés
-        documents = self.index.similarity_search(
-            question, k=TOP_K, fetch_k=FETCH_K,
-            filter=lambda metadata: metadata["last_date"][:10] >= today.isoformat(),
-        )
+        documents = self.retrieve(question, today)
 
         saturday, sunday = weekend_of(today)
         response = self.chain.invoke({
