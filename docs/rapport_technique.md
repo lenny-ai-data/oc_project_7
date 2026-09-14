@@ -112,6 +112,8 @@ Longueur des textes obtenus : médiane de 732 caractères, 90 % sous 1 750 carac
 
 *À compléter (étape 3).*
 
+**Fonctionnement du découpage.** `RecursiveCharacterTextSplitter` coupe le texte sur le premier séparateur présent (`\n\n`, puis `\n`, puis espace), assemble les morceaux tant qu'ils tiennent dans `chunk_size`, et ne redescend au séparateur plus fin que si un morceau dépasse seul la limite (et le recouvrement ne reprend que des morceaux entiers).
+
 ### 3.6 Limites connues des données
 - Quelques petits agendas hors culture peuvent subsister mais restent minoritaires, les 30 plus gros agendas ayant été vérifiés.
 - Les données sont statiques : les volumes ci-dessus correspondent à une collecte réalisée en septembre 2026.
