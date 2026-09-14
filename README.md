@@ -4,6 +4,8 @@ POC d'un chatbot pour **Puls-Events** : il répond aux questions des utilisateur
 
 Stack : **LangChain**, **Mistral** (embeddings et LLM), **Faiss** (base vectorielle).
 
+📄 Choix techniques, données et résultats : voir le [rapport technique](docs/rapport_technique.md).
+
 ## Installation
 
 Prérequis : `uv`.
