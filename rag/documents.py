@@ -10,6 +10,7 @@ import re
 from pathlib import Path
 
 from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # --- CONSTANTES ----------------------------------
 
@@ -57,6 +58,31 @@ def load_documents(path: Path = PROCESSED_PATH) -> list[Document]:
         for event in events
     ]
 
+def split_documents(documents: list[Document], chunk_size: int | None, chunk_overlap: int = 0) -> list[Document]:
+    """Découpe les documents trop longs en chunks, en répétant l'en-tête (titre, dates, lieu) dans chacun.
+
+    chunk_size=None : pas de découpage, un événement = un vecteur.
+    """
+    if chunk_size is None:
+        return documents
+
+    chunks = []
+    for doc in documents:
+        if len(doc.page_content) <= chunk_size:
+            chunks.append(doc)
+            continue
+
+        # En-tête jusqu'à la fin de la ligne "Lieu"
+        head, _, rest = doc.page_content.partition("\nLieu : ")
+        location, _, body = rest.partition("\n")
+        header = f"{head}\nLieu : {location}"
+
+        # Le corps est découpé avec insert de l'en-tête dans chaque chunk
+        splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size - len(header) - 1, chunk_overlap=chunk_overlap)
+        for part in splitter.split_text(body):
+            chunks.append(Document(page_content=f"{header}\n{part}", metadata=doc.metadata))
+    return chunks
+
 # --- MAIN ----------------------------------
 
 if __name__ == "__main__":
@@ -70,3 +96,14 @@ if __name__ == "__main__":
     # Statistiques
     lengths = sorted(len(doc.page_content) for doc in documents)
     print(f"\nLongueur des textes : médiane {lengths[len(lengths) // 2]}, max {lengths[-1]} caractères")
+
+    # Découpage : exemple sur le document le plus long
+    chunks = split_documents(documents, chunk_size=1000, chunk_overlap=150)
+    print(f"\nDécoupage à 1000 caractères : {len(chunks)} chunks")
+
+    longest = max(documents, key=lambda doc: len(doc.page_content))
+    longest_chunks = split_documents([longest], chunk_size=1000, chunk_overlap=150)
+    print(f"Document le plus long -> {len(longest_chunks)} chunks, dont les 2 premiers :\n")
+    
+    for chunk in longest_chunks[:2]:
+        print(chunk.page_content, "\n---")

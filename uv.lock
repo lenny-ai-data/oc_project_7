@@ -1612,6 +1612,7 @@ dependencies = [
     { name = "langchain-community" },
     { name = "langchain-mistralai" },
     { name = "pandas" },
+    { name = "python-dotenv" },
     { name = "requests" },
 ]
 
@@ -1630,6 +1631,7 @@ requires-dist = [
     { name = "langchain-community", specifier = ">=0.4.2" },
     { name = "langchain-mistralai", specifier = ">=1.1.6" },
     { name = "pandas", specifier = ">=3.0.5" },
+    { name = "python-dotenv", specifier = ">=1.2.3" },
     { name = "requests", specifier = ">=2.34.2" },
 ]
 

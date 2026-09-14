@@ -4,7 +4,9 @@
 
 import json
 
-from rag.documents import METADATA_FIELDS, build_text, load_documents
+from langchain_core.documents import Document
+
+from rag.documents import METADATA_FIELDS, build_text, load_documents, split_documents
 
 # --- CONSTANTES ----------------------------------
 
@@ -46,3 +48,19 @@ def test_load_documents(tmp_path):
 
     assert doc.page_content == build_text(EVENT)
     assert set(doc.metadata) == set(METADATA_FIELDS)
+
+def test_split_documents():
+    short = Document(page_content=build_text(EVENT), metadata={"uid": "1"})
+    long = Document(page_content=build_text(EVENT | {"long_description": "Une phrase du programme.\n" * 40}), metadata={"uid": "2"})
+
+    # Sans découpage : documents inchangés
+    assert split_documents([short, long], chunk_size=None) == [short, long]
+
+    chunks = split_documents([short, long], chunk_size=300)
+
+    assert chunks[0] == short  # document court non découpé
+    assert len(chunks) > 2
+    for chunk in chunks[1:]:
+        assert len(chunk.page_content) <= 300
+        assert chunk.page_content.startswith("Titre : Concert de jazz\nDates : Samedi 20 juin, 20h00 (2026)\nLieu : Le Taquin")
+        assert chunk.metadata == {"uid": "2"}
