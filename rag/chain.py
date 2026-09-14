@@ -8,7 +8,9 @@ Usage : uv run python -m rag.chain "Ma question"
 import sys
 from datetime import date, timedelta
 
+from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
+from langchain_core.language_models import BaseChatModel
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_mistralai import ChatMistralAI
 
@@ -76,9 +78,11 @@ def format_context(documents: list[Document]) -> str:
 class RAG:
     """Système RAG : index et LLM chargés une seule fois, puis réutilisés à chaque question."""
 
-    def __init__(self, index_name: str = INDEX_NAME):
-        self.index = load_index(INDEX_DIR / index_name)
-        self.chain = PROMPT | ChatMistralAI(model=LLM_MODEL, temperature=0)
+    def __init__(self, index: FAISS | None = None, llm: BaseChatModel | None = None):
+        """Par défaut : index INDEX_NAME et LLM Mistral. Les tests peuvent fournir un faux index et un faux LLM."""
+        self.index = index if index is not None else load_index(INDEX_DIR / INDEX_NAME)
+        llm = llm if llm is not None else ChatMistralAI(model=LLM_MODEL, temperature=0)
+        self.chain = PROMPT | llm
 
     def retrieve(self, question: str, today: date) -> list[Document]:
         """Recherche les TOP_K événements non terminés les plus proches de la question."""

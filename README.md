@@ -50,6 +50,13 @@ uv run python -m rag.index
 
 Deux index sont construits, sans découpage (`no_chunk`, ~1 min) et avec découpage à 1 000 caractères (`chunk_1000`, ~2 min).
 
+## Poser une question au système RAG
+
+```bash
+# Recherche des événements à venir les plus proches + réponse générée par Mistral
+uv run python -m rag.chain "Je cherche un concert de jazz, tu as des idées ?"
+```
+
 ## Tests
 
 ```bash
