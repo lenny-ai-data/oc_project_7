@@ -100,8 +100,10 @@ if __name__ == "__main__":
     # Découpage : exemple sur le document le plus long
     chunks = split_documents(documents, chunk_size=1000, chunk_overlap=150)
     print(f"\nDécoupage à 1000 caractères : {len(chunks)} chunks")
+
     longest = max(documents, key=lambda doc: len(doc.page_content))
     longest_chunks = split_documents([longest], chunk_size=1000, chunk_overlap=150)
     print(f"Document le plus long -> {len(longest_chunks)} chunks, dont les 2 premiers :\n")
+    
     for chunk in longest_chunks[:2]:
         print(chunk.page_content, "\n---")

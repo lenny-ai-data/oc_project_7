@@ -39,6 +39,17 @@ uv run python -m rag.documents
 
 L'analyse exploratoire qui justifie ces choix est dans `scripts/eda_openagenda.ipynb`.
 
+## Construction de l'index vectoriel
+
+Prérequis : une clé API Mistral dans un fichier `.env` à la racine (`MISTRAL_API_KEY=...`), à vérifier avec `scripts/check_env.py`.
+
+```bash
+# Vectorisation (mistral-embed) et index Faiss -> data/index/
+uv run python -m rag.index
+```
+
+Deux index sont construits, sans découpage (`no_chunk`, ~1 min) et avec découpage à 1 000 caractères (`chunk_1000`, ~2 min).
+
 ## Tests
 
 ```bash

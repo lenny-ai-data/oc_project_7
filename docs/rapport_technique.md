@@ -130,6 +130,16 @@ Longueur des textes obtenus : médiane de 732 caractères, 90 % sous 1 750 carac
 
 *À compléter (étape 3).*
 
+**Construction des index** ([`rag/index.py`](../rag/index.py), `uv run python -m rag.index`) : deux configurations sont construites pour mesurer l'impact du découpage.
+
+| Index | Découpage | Vecteurs | Durée |
+|---|---|---|---|
+| `no_chunk` | Aucun (un événement = un vecteur) | 3 868 | 70 s |
+| `chunk_1000` | 1 000 caractères, recouvrement 150, en-tête répété | 6 216 | 125 s |
+
+- **Vectorisation** : `mistral-embed` (dimension 1 024). LangChain regroupe les textes par lots d'au plus 16 000 tokens et les envoie séquentiellement, avec relance automatique en cas d'erreur 429.
+- **Coût** : 188 requêtes API au total (tests compris) pour 0,29 $, prélevés sur le forfait mensuel de 10 $ inclus dans l'offre gratuite Mistral. Les limites de débit de l'offre gratuite (1 requête/s, 20 M tokens/min pour `mistral-embed`) n'ont pas été atteintes.
+
 ---
 
 ## 6. API et endpoints exposés
