@@ -1054,7 +1054,7 @@ wheels = [
 [[package]]
 name = "p7"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "faiss-cpu" },
     { name = "langchain" },
