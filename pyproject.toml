@@ -1,0 +1,20 @@
+[project]
+name = "p7"
+version = "0.1.0"
+description = "Systeme RAG pour la recommandation d evenements culturels"
+readme = "README.md"
+authors = [
+    { name = "L. Jacquinot", email = "315764128+lenny-ai-data@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "langchain>=1.4.0",
+    "mistral>=22.0.0",
+]
+
+[project.scripts]
+p7 = "p7:main"
+
+[build-system]
+requires = ["uv_build>=0.12.6,<0.13.0"]
+build-backend = "uv_build"
