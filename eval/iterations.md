@@ -37,7 +37,7 @@ Les résultats détaillés de chaque itération sont dans l'historique git de `e
   - `temp-01` et `temp-02` (`no_chunk`) échouent dès la recherche : le système répond honnêtement « rien ce week-end », sans aider l'utilisateur. Côté `chunk_1000`, `temp-01` présente une visite de campus comme un « atelier-concert ».
   - `info-01` : un « je ne connais pas le tarif » correct obtient une *answer relevancy* de 0, car Ragas note 0 toute réponse jugée évasive.
   - `fact-04` (`chunk_1000`) : les conditions sont toujours absentes du chunk retenu (itération 3).
-  - `hors-01` et `hors-02` : refus, mais toujours suivis d'une relance.
+  - `hors-01` et `hors-02` : refus, suivis d'un recadrage vers les événements du week-end, cohérent pour un assistant de recommandation.
 
 ## 3. Découpage : conditions d'accès répétées dans chaque chunk
 
