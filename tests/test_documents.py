@@ -51,7 +51,8 @@ def test_load_documents(tmp_path):
 
 def test_split_documents():
     short = Document(page_content=build_text(EVENT), metadata={"uid": "1"})
-    long = Document(page_content=build_text(EVENT | {"long_description": "Une phrase du programme.\n" * 40}), metadata={"uid": "2"})
+    long_event = EVENT | {"long_description": "Une phrase du programme.\n" * 40, "conditions": "Gratuit."}
+    long = Document(page_content=build_text(long_event), metadata={"uid": "2"})
 
     # Sans découpage : documents inchangés
     assert split_documents([short, long], chunk_size=None) == [short, long]
@@ -63,4 +64,5 @@ def test_split_documents():
     for chunk in chunks[1:]:
         assert len(chunk.page_content) <= 300
         assert chunk.page_content.startswith("Titre : Concert de jazz\nDates : Samedi 20 juin, 20h00 (2026)\nLieu : Le Taquin")
+        assert chunk.page_content.count("Conditions : Gratuit.") == 1  # conditions dans chaque chunk, sans doublon
         assert chunk.metadata == {"uid": "2"}

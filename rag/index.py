@@ -1,10 +1,13 @@
 """Vectorisation des documents et index Faiss (création, sauvegarde, chargement).
 
-Usage : uv run python -m rag.index
+Usage :
+    uv run python -m rag.index              toutes les configurations
+    uv run python -m rag.index chunk_1000   une seule configuration
 """
 
 # --- IMPORT MODULES ----------------------------------
 
+import sys
 import time
 from pathlib import Path
 
@@ -58,11 +61,18 @@ def load_index(path: Path = INDEX_DIR) -> FAISS:
 # --- MAIN ----------------------------------
 
 if __name__ == "__main__":
+    # Configurations à construire : celle passée en argument, sinon toutes
+    names = sys.argv[1:] or list(CONFIGS)
+    unknown = [name for name in names if name not in CONFIGS]
+    if unknown:
+        raise SystemExit(f"Configuration inconnue : {unknown}. Choix possibles : {list(CONFIGS)}")
+
     # Chargement des documents
     documents = load_documents()
 
     # Un index par configuration de découpage
-    for name, (chunk_size, chunk_overlap) in CONFIGS.items():
+    for name in names:
+        chunk_size, chunk_overlap = CONFIGS[name]
         # Chunking
         chunks = split_documents(documents, chunk_size, chunk_overlap)
         print(f"\n[{name}] {len(chunks)} textes à vectoriser...")

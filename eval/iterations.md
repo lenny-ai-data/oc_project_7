@@ -12,6 +12,7 @@ Les résultats détaillés de chaque itération sont dans l'historique git de `e
 | 1 | Référence | `chunk_1000` | 93 % | 0,76 | 0,56 | 0,46 | 0,57 |
 | 2 | Prompt : week-end seulement si demandé | `no_chunk` | 87 % | **0,84** | **0,75** | 0,51 | 0,67 |
 | 2 | Prompt : week-end seulement si demandé | `chunk_1000` | 93 % | 0,78 | **0,74** | 0,45 | 0,57 |
+| 3 | Découpage : conditions dans chaque chunk | `chunk_1000` | 93 % | **0,86** | **0,80** | 0,53 | 0,65 |
 
 ## 1. Référence
 
@@ -37,3 +38,26 @@ Les résultats détaillés de chaque itération sont dans l'historique git de `e
   - `info-01` : un « je ne connais pas le tarif » correct obtient une *answer relevancy* de 0, car Ragas note 0 toute réponse jugée évasive.
   - `fact-04` (`chunk_1000`) : les conditions sont toujours absentes du chunk retenu (itération 3).
   - `hors-01` et `hors-02` : refus, mais toujours suivis d'une relance.
+
+## 3. Découpage : conditions d'accès répétées dans chaque chunk
+
+**Changement** (`rag/documents.py`) : la ligne `Conditions` (tarif, réservation), en fin de texte, est déplacée dans l'en-tête répété de chaque chunk. L'index `chunk_1000` est reconstruit (6 273 chunks au lieu de 6 216) ; `no_chunk` n'est pas concerné.
+
+**Constats**
+- **Cause corrigée** : aucun chunk n'est plus privé des conditions de son événement (1 687 auparavant).
+- **`fact-04` résolu** : « Non, il n'est pas nécessaire de réserver… gratuite et sans réservation, limitée à 80 personnes ». Ses scores passent de 0,40 / 0 / 0 / 0,50 à 0,83 / 0,86 / 1,0 / 1,0.
+- **Moyennes** : *faithfulness* 0,78 → 0,86, *answer relevancy* 0,74 → 0,80, *context precision* 0,45 → 0,53, *context recall* 0,57 → 0,65. L'amélioration est générale ; hors `fact-04`, chaque écart reste dans le bruit du juge. Exemple de bruit : `fact-01` a les mêmes sources, mais son *context recall* passe de 0,5 à 1,0.
+- **Recherche** : le hit@5 reste à 93 %, mais les sources changent pour 10 questions sur 15. Les en-têtes plus riches modifient les vecteurs des chunks.
+- **Limites restantes** :
+  - `temp-01` (« concerts gratuits ce week-end ») échoue toujours : la recherche ignore les dates.
+  - *Context precision* et *context recall* restent à 0 sur les questions larges (`reco-01`, `temp-01` à `temp-03`) : la référence cite quelques exemples, et les événements retrouvés, parfois tout aussi valables, n'y figurent pas. C'est une limite de l'annotation par exemples pour les questions ouvertes.
+  - `info-01` : réponse correcte (« je ne dispose pas du tarif »), mais *answer relevancy* reste à 0 (réponse jugée évasive), et le modèle suggère encore de consulter le site du Château d'Eau.
+
+## Bilan provisoire
+
+| Index | Itération | Hit@5 | Faithfulness | Answer relevancy | Context precision | Context recall |
+|---|---|---|---|---|---|---|
+| `no_chunk` | 2 | 87 % | 0,84 | 0,75 | 0,51 | 0,67 |
+| `chunk_1000` | 3 | **93 %** | **0,86** | **0,80** | **0,53** | 0,65 |
+
+`chunk_1000` devance légèrement `no_chunk`. Le seul écart net est le hit@5 (une question de plus retrouvée, `temp-02`) ; les écarts Ragas restent dans le bruit du juge.

@@ -46,6 +46,8 @@ Prérequis : une clé API Mistral dans un fichier `.env` à la racine (`MISTRAL_
 ```bash
 # Vectorisation (mistral-embed) et index Faiss -> data/index/
 uv run python -m rag.index
+# Ou une seule configuration
+uv run python -m rag.index chunk_1000
 ```
 
 Deux index sont construits, sans découpage (`no_chunk`, ~1 min) et avec découpage à 1 000 caractères (`chunk_1000`, ~2 min).

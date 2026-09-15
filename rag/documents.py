@@ -77,6 +77,11 @@ def split_documents(documents: list[Document], chunk_size: int | None, chunk_ove
         location, _, body = rest.partition("\n")
         header = f"{head}\nLieu : {location}"
 
+        # Conditions (tarif, réservation), en fin de texte : déplacées dans l'en-tête pour figurer dans chaque chunk
+        if "\nConditions : " in body:
+            body, _, conditions = body.rpartition("\nConditions : ")
+            header += f"\nConditions : {conditions}"
+
         # Le corps est découpé avec insert de l'en-tête dans chaque chunk
         splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size - len(header) - 1, chunk_overlap=chunk_overlap)
         for part in splitter.split_text(body):
