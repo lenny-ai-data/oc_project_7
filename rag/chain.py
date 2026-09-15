@@ -109,7 +109,11 @@ class RAG:
             "context": format_context(documents),
             "question": question,
         })
-        return {"answer": response.content, "sources": [doc.metadata for doc in documents]}
+        return {
+            "answer": response.content,
+            "sources": [doc.metadata for doc in documents],
+            "contexts": [doc.page_content for doc in documents],
+        }
 
 # --- MAIN ----------------------------------
 

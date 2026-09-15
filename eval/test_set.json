@@ -75,8 +75,8 @@
       "id": "reco-05",
       "category": "recommandation",
       "question": "J'aimerais bien faire un jeu immersif type escape game.",
-      "reference": "Microb-ID, jeu immersif entre jeu de rôle et escape game pour enfants et adultes, du 21 au 25 octobre 2026 au Quai des Savoirs (festival Lumières sur le Quai), gratuit sur inscription.",
-      "expected_uids": ["74674484"]
+      "reference": "Plusieurs escape games à la Bibliothèque d'Étude et du Patrimoine, par exemple « La menace des livres contaminés » (vendredi 23 octobre 2026) ou « Face à l'IA » (dimanche 8 novembre 2026), ainsi que Microb-ID, jeu immersif entre jeu de rôle et escape game pour enfants et adultes, du 21 au 25 octobre 2026 au Quai des Savoirs, gratuit sur inscription.",
+      "expected_uids": ["74674484", "47916116", "69551148", "85473500", "48510100", "27157688", "89379247"]
     },
     {
       "id": "temp-01",
