@@ -19,7 +19,7 @@ from rag.index import INDEX_DIR, load_index
 # --- CONSTANTES ----------------------------------
 
 # Index utilisé
-INDEX_NAME = "no_chunk"
+INDEX_NAME = "chunk_1000"
 
 # Modèle de génération et nombre d'événements fournis au LLM
 # Seuls les modèles ministral sont accessibles avec le free plan
