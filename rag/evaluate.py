@@ -29,19 +29,16 @@ EVAL_DIR = Path(__file__).parent.parent / "eval"
 TEST_SET_PATH = EVAL_DIR / "test_set.json"
 RESULTS_DIR = EVAL_DIR / "results"
 
-# LLM juge pour Ragas (188 requêtes/min sur l'offre gratuite)
+# LLM juge pour Ragas (188 req/min en free plan)
 JUDGE_MODEL = "ministral-8b-latest"
 
 # Métriques Ragas, dans l'ordre des colonnes produites
 RAGAS_METRICS = ["faithfulness", "answer_relevancy", "llm_context_precision_with_reference", "context_recall"]
 
-# Module importé par Ragas 0.4.3 mais retiré de langchain-community 0.4
-VERTEXAI_MODULE = "langchain_community.chat_models.vertexai"
-
 # --- FONCTIONS ----------------------------------
 
 def hit(expected_uids: list[str], source_uids: list[str]) -> bool | None:
-    """Vrai si au moins un événement attendu fait partie des sources (None si aucun événement n'est attendu)."""
+    """Vrai si au moins un événement attendu fait partie des sources (None si aucun événement attendu)."""
     if not expected_uids:
         return None
     return bool(set(expected_uids) & set(source_uids))
@@ -75,10 +72,11 @@ def hit_rate_by_category(results: list[dict]) -> dict[str, float]:
 def patch_ragas_import() -> None:
     """Contournement d'un bug de Ragas 0.4.3 (https://github.com/vibrantlabsai/ragas/issues/2745).
 
-    Ragas importe ChatVertexAI depuis un module retiré de langchain-community 0.4, ce qui fait échouer
-    « import ragas ». La classe ne sert qu'à une liste de types dans Ragas : on déclare un module factice,
-    uniquement si le vrai module est absent (sans effet le jour où le bug est corrigé).
-    """
+    Ragas importe ChatVertexAI depuis un module retiré de langchain-community 0.4"""
+
+    # Module cible
+    VERTEXAI_MODULE = "langchain_community.chat_models.vertexai"
+
     try:
         importlib.import_module(VERTEXAI_MODULE)
     except ModuleNotFoundError:
@@ -88,21 +86,28 @@ def patch_ragas_import() -> None:
 
 def ragas_scores(results: list[dict]) -> list[dict]:
     """Ajoute les scores Ragas aux questions qui attendent des événements (les autres n'ont pas de bons contextes)."""
+    # --- Import Ragas ----------------------------------
     patch_ragas_import()
-    # Import Ragas
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     from ragas import EvaluationDataset, RunConfig, SingleTurnSample, evaluate
     from ragas.embeddings import LangchainEmbeddingsWrapper
     from ragas.llms import LangchainLLMWrapper
     from ragas.metrics import Faithfulness, LLMContextPrecisionWithReference, LLMContextRecall, ResponseRelevancy
+    # ---------------------------------------------------
 
+    # Selection des questions avec une réponse attendue
     rated = [result for result in results if result["expected_uids"]]
+
+    # Préparation au format Ragas
     dataset = EvaluationDataset(samples=[
         SingleTurnSample(user_input=r["question"], response=r["answer"], retrieved_contexts=r["contexts"], reference=r["reference"])
         for r in rated
     ])
 
-    embeddings = get_embeddings()  # charge aussi le .env pour le LLM juge
+    # Chargement du modele d'embeddings
+    embeddings = get_embeddings()
+
+    # Evaluation (9 appels LLM par question)
     scores = evaluate(
         dataset,
         # strictness=1 (Ragas échoue en fusionnant les réponses de ChatMistralAI)
@@ -112,7 +117,7 @@ def ragas_scores(results: list[dict]) -> list[dict]:
         run_config=RunConfig(max_workers=4, timeout=180),
     )
 
-    # Scores ajoutés à chaque résultat (NaN, métrique en échec, remplacé par None pour un JSON valide)
+    # Scores ajoutés à chaque résultat (NaN remplacé par None pour un JSON valide)
     for result, row in zip(rated, scores.to_pandas()[RAGAS_METRICS].to_dict("records")):
         result["ragas"] = {metric: (None if math.isnan(value) else round(value, 3)) for metric, value in row.items()}
     return results
@@ -150,6 +155,7 @@ if __name__ == "__main__":
         # Scores Ragas à partir des réponses déjà sauvegardées (sans rappeler le RAG)
         results = ragas_scores(json.loads(results_path.read_text(encoding="utf-8")))
 
+        # Résultats
         print(f"\nRagas ({index_name}), moyennes :")
         for metric, mean in ragas_means(results).items():
             print(f"  {metric:<40} {mean:.2f}" if mean is not None else f"  {metric:<40} -")

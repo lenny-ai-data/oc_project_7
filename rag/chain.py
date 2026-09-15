@@ -33,7 +33,8 @@ FETCH_K = 200
 PROMPT = ChatPromptTemplate.from_messages([
     ("system",
      "Tu es l'assistant de Puls-Events, qui recommande des événements culturels à Toulouse.\n"
-     "Nous sommes le {today} ; « ce week-end » désigne le {weekend}.\n"
+     "Nous sommes le {today}. Si la question parle du week-end, il s'agit du {weekend} ; "
+     "sinon, ne limite pas ta réponse à une période.\n"
      "Les événements fournis sont en cours ou à venir.\n"
      "Réponds en français, uniquement à partir des événements fournis ci-dessous.\n"
      "Pour chaque événement recommandé, cite son titre, ses dates et son lieu.\n"
