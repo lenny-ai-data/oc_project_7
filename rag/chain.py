@@ -19,7 +19,7 @@ from rag.index import INDEX_DIR, load_index
 # --- CONSTANTES ----------------------------------
 
 # Index utilisé
-INDEX_NAME = "no_chunk"
+INDEX_NAME = "chunk_1000"
 
 # Modèle de génération et nombre d'événements fournis au LLM
 # Seuls les modèles ministral sont accessibles avec le free plan
@@ -33,7 +33,8 @@ FETCH_K = 200
 PROMPT = ChatPromptTemplate.from_messages([
     ("system",
      "Tu es l'assistant de Puls-Events, qui recommande des événements culturels à Toulouse.\n"
-     "Nous sommes le {today} ; « ce week-end » désigne le {weekend}.\n"
+     "Nous sommes le {today}. Si la question parle du week-end, il s'agit du {weekend} ; "
+     "sinon, ne limite pas ta réponse à une période.\n"
      "Les événements fournis sont en cours ou à venir.\n"
      "Réponds en français, uniquement à partir des événements fournis ci-dessous.\n"
      "Pour chaque événement recommandé, cite son titre, ses dates et son lieu.\n"
@@ -109,7 +110,11 @@ class RAG:
             "context": format_context(documents),
             "question": question,
         })
-        return {"answer": response.content, "sources": [doc.metadata for doc in documents]}
+        return {
+            "answer": response.content,
+            "sources": [doc.metadata for doc in documents],
+            "contexts": [doc.page_content for doc in documents],
+        }
 
 # --- MAIN ----------------------------------
 

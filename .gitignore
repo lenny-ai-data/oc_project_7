@@ -11,7 +11,11 @@ wheels/
 
 # Dossiers exclus
 livrables/
-data/
+# data/ ignoré, sauf l'index retenu (versionné pour démarrer l'API sans reconstruire)
+data/*
+!data/index/
+data/index/*
+!data/index/chunk_1000/
 CONSIGNE.md
 
 # Secrets
