@@ -22,7 +22,13 @@
       "Titre : Concert\nDates : Mercredi 31 mars 2027, 20h00\nLieu : Auditorium Saint-Pierre des Cuisines, 12 place Saint-Pierre 31000 Toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Orchestre Symphonique B du Conservatoire\nRÉSERVATION : à partir du 19 mars 2026, 12h\nhttps://billetterie.festik.net/crrtoulouse/\n(Même si le concert affiche complet, quelques places pourraient se libérer juste avant le début. Nous vous invitons à vous présenter sur place)\nJean-Guy Olive, direction\nL'Orchestre Symphonique B, véritable passerelle entre la pratique collective et le répertoire symphonique complet, l’Orchestre B accueille les élèves en fin de 2ᵉ cycle et début de 3ᵉ cycle.\nIls y abordent des œuvres dans leur version originale, apprennent à maîtriser une écriture orchestrale plus dense et se produisent lors d’une représentation annuelle, marqueur fort de leur progression.\nConditions : Entrée gratuite sur réservation",
       "Titre : Concert\nDates : Samedi 28 novembre, 20h00 (2026)\nLieu : Auditorium Saint-Pierre des Cuisines, 12 place Saint-Pierre 31000 Toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Orchestre symphonique A du Conservatoire\nRÉSERVATION : à partir du 18 novembre 2026, 12h\nhttps://billetterie.festik.net/crrtoulouse/\n(Même si le concert affiche complet, quelques places pourraient se libérer juste avant le début. Nous vous invitons à vous présenter sur place)\nPROGRAMME :\n- Symphonie concertante en Sib M de Joseph Haydn\nSolistes :\nJean-Louis Constant, violon\nNiels Hoyrup, violoncelle\nYoanne Gillard, hautbois\nLaurent Le Chenadec, basson\n- Symphonie n° 8 d’Antonín Dvořák\nChristophe Millet, direction\nConditions : Entrée gratuite sur réservation"
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 0.667,
+      "answer_relevancy": 0.797,
+      "llm_context_precision_with_reference": 1.0,
+      "context_recall": 1.0
+    }
   },
   {
     "id": "fact-02",
@@ -47,7 +53,13 @@
       "Titre : Concert\nDates : Mardi 19 janvier 2027, 19h00\nLieu : CRR-Espace Varèse, 17, rue larrey 31000 toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Franco-allemand\nRÉSERVATION : à partir du 8 Janvier, 12h\nhttps://billetterie.festik.net/crrtoulouse/\n(Même si le concert affiche complet, quelques places pourraient se libérer juste avant le début. Nous vous invitons à vous présenter sur place)\nConcert des Classes de chant d'Elena Poesina et Julien Véronène et classes de Musique de chambre de Guillaume Rial.\nConditions : Entrée libre dans la limite des places disponibles",
       "Titre : Concert\nDates : Jeudi 10 décembre, 19h00 (2026)\nLieu : CRR-Espace Varèse, 17, rue larrey 31000 toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : « 1er jet »\nConcert \"Premier jet\" :\nŒuvres des élèves des classes de composition instrumentale et électroacoustique des classes de Guy-Olivier FERLA et Guillaume HERMEN.\nConditions : Entrée libre dans la limite des places disponibles"
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.93,
+      "llm_context_precision_with_reference": 0.333,
+      "context_recall": 1.0
+    }
   },
   {
     "id": "fact-03",
@@ -72,7 +84,13 @@
       "Titre : jeune création documentaire\nDates : Jeudi 19 novembre, 15h00 (2026)\nLieu : Médiathèque José Cabanis, 1 All Jacques Chaban-Delmas, 31500 Toulouse, Lapujade / Bonnefoy / Périole / Marengo / La Colonne\nDescription : Mois du film documentaire  - EXplorations\nJeudi 19 novembre 15h\nSéance en partenariat avec l’ENSAV (École Nationale Supérieure d’Audiovisuel) et le Lycée des Arènes.\nMon visage a disparu de Robin Doux (2026, 15 min)\nSuite à la maladie de son grand-père, un jeune homme vient chez sa grand-mère pour prêter main forte. Cela faisait 7 ans qu'il n'y était pas allé...\nFata Morgana d'Alma Barbier (2025, 14 min)\nPour sa première expédition scientifique en Antarctique, Mogo part avec mon enregistreur. Depuis une chambre située à l'autre bout du monde, ses sons deviennent la matière d'un voyage parallèle.\nOrigines ferraillées d'Elina Bealay (2025, 22 min)\nDans un grand pré, une foule s'agite pour voir des voitures cabossées et rafistolées rouler à toute berzingue sur la terre battue. Le film suit sur une journée l’ambiance festive et pleine de rebondissements d’une course de « fun car\".\nCe qui nous relie\nUne conférence, un atelier de tétragravure, un cours de braille... La médiathèque José Cabanis est un lieu de lien, une oasis d'accueil, un véritable espace public. La variété des activités qui y sont organisées, l'engagement de ses bibliothécaires, l'architecture spectaculaire mais enveloppante : c'est tout cela que ce film d'examen a cherché à montrer. Sept étudiants ont travaillé sur ce film réalisé dans le cadre de l'obtention de leur BTS : Marysa Buisson pour la gestion de production, Annoé Gréffier et Félix Gillot pour les métiers de l'image, Maëlys Berrier et Léo Maury pour le son, ainsi que Pauline Leroux et Enoha Thiel, pour le montage.\nSéance suivie d’un échange avec les étudiants réalisateurs, les enseignants et Nicolas Potin, intervenant cinéma.\nMédiathèque José Cabanis – Grand auditorium (niveau –1)",
       "Titre : La Marseillaise des ivrognes\nDates : Samedi 14 novembre, 16h00 (2026)\nLieu : Médiathèque José Cabanis, 1 All Jacques Chaban-Delmas, 31500 Toulouse, Lapujade / Bonnefoy / Périole / Marengo / La Colonne\nDescription : Mois du film documentaire  - EXplorations - Cinespana\nSamedi 14 novembre 16h\nRéalisé par Pablo Gil Rituerto - France, Espagne, Italie - 2023 - 96 min\nUn été, une équipe de tournage arpente les routes et les villages de la moitié nord de l’Espagne dans les pas du groupe Cantacronache. Ces jeunes ethnomusicologues italiens, à l’été 1961, en pleine dictature franquiste, se donnent pour mission de récolter des chansons populaires de la résistance. Par le prisme des archives sonores, de la mémoire orale et de la réactualisation des chansons, les deux voyages se répondent formant une géographie sensible et politique d’un territoire où les plaies du franquisme sont encore ouvertes.\nSéance en partenariat avec le festival Cinespana. Suivie d’un échange avec les programmateurs du festival et Nicolas Potin.\nMédiathèque José Cabanis – Grand auditorium (niveau –1)"
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.842,
+      "llm_context_precision_with_reference": 1.0,
+      "context_recall": 1.0
+    }
   },
   {
     "id": "fact-04",
@@ -97,7 +115,13 @@
       "Titre : Le Passeur d’histoires : Nos coups de coeur !\nDates : Samedi 3 octobre, 16h30 (2026)\nLieu : Muséum d'histoire naturelle de Toulouse_médiathèque jeunesse Pourquoi Pas ?, 35 allées Jules Guesde 31000 Toulouse, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nDescription : Biblis en folie 2026\nInvitation pour un moment de partage avec les médiathécaires qui vous feront découvrir leurs albums préférés !",
       "Titre : De l’histoire collective à l’histoire personnelle\nDates : Samedi 12 décembre, 09h00 (2026)\nLieu : Muséum d'histoire naturelle de Toulouse, 35 allées Jules Guesde, Toulouse, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nDescription : A partir d’un corpus d’archives patrimoniales, les participants écriront une histoire personnelle. Le récit prendra la forme d’un petit objet photographique collectif.\nDurée : 8h\nConditions : Limité à 8 participants"
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.863,
+      "llm_context_precision_with_reference": 1.0,
+      "context_recall": 1.0
+    }
   },
   {
     "id": "fact-05",
@@ -122,7 +146,13 @@
       "Titre : Les vies de la photographie\nDates : 17 octobre 2026 - 31 janvier 2027\nLieu : Le Château d'Eau, Place Laganne, 31300 Toulouse, France, Saint-Cyprien\nDescription : exposition des collections du Château d'Eau et des musées toulousains\nCollections du Château d'Eau du Musée des Arts Précieux Paul-Dpuy et Le Musée Georges Labit",
       "Titre : Passeport pour l'art - Parcours découverte\nDates : 15 décembre 2026 - 19 janvier 2027, certains mardis\nLieu : Centre culturel Saint-Cyprien, 56 allées Charles de Fitte, 31300 Toulouse, Saint-Cyprien\nDescription : Dispositif EAC “Passeport pour l’art”\nUne plongée au cœur de la forêt primaire de Białowieża, et de l’incroyable vie du couple qui y vécu pendant plus de 30 ans, sans eau courante ni électricité, entouré d’animaux sauvages.\nLa médiation de l’exposition « Białowieża, la forêt vivante de Lech & Simona » sera suivie d’une expérimentation en laboratoire (techniques argentiques et / ou numériques), en lien avec les thématiques des photographies.\nConditions : Limité à 3 classes, à partir du CE2"
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.903,
+      "llm_context_precision_with_reference": 1.0,
+      "context_recall": 1.0
+    }
   },
   {
     "id": "fact-06",
@@ -147,7 +177,13 @@
       "Titre : \"Où en est-on de la vie sur Mars?\"\nDates : Mardi 29 septembre, 18h00 (2026)\nLieu : Médiathèque José Cabanis, 1 All Jacques Chaban-Delmas, 31500 Toulouse, Lapujade / Bonnefoy / Périole / Marengo / La Colonne\nDescription : Une conférence de l'AAE\nMardi 29 septembre à 18h\nPar Sylvestre Maurice, astrophysicien-planétologue, directeur de l’IRAP, correspondant de l’AAE\nNous vivons une époque formidable : une vingtaine de véhicules robotisés ont exploré Mars depuis l’an 2000. Trophée de suprématie nationale, champ d’expérimentations technologiques pour les industriels, source d’émerveillement pour les peuples qui suivent avec une étonnante ferveur l’aventure des robots, la planète rouge représente la plus belle quête pour les scientifiques qui, eux, cherchent méthodiquement si les martiens existent. Ils préparent la prochaine étape : la collecte d’échantillons qui seront rapportés sur Terre, le graal des planétologues. Où en sommes-nous ?\nMédiathèque José Cabanis - Grand Auditorium (niveau -1)",
       "Titre : Comment écrit-on une histoire ?\nDates : Samedi 26 septembre, 15h00 (2026)\nLieu : Médiathèque Empalot, 40 Avenue Jean Moulin, 31400 Toulouse, France, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nMots-clés : humour, chevalier, création\nDescription : Conférence dansée  - Quinzaine littéraire\nConférence dansée par Frédéric Maupomé, Denis Escadafals\nSamedi 26 septembre– 15h\nMêlant conférence, théâtre et discours sur la création, Comment écrit-on une histoire ? L’exemple du chevalier aux deux épées est à la fois un spectacle humoristique et… un cours magistral qui dégénère en un conflit entre l’auteur et son personnage. Parce qu’écrire une histoire, c’est ça : un stylo, un personnage, une idée de départ, et rien ne se passe comme prévu !\nPublic : Tout public - Durée : 45 min\nMédiathèque Empalot"
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 0.6,
+      "answer_relevancy": 0.887,
+      "llm_context_precision_with_reference": 1.0,
+      "context_recall": 1.0
+    }
   },
   {
     "id": "reco-01",
@@ -185,7 +221,13 @@
       "Titre : Chanter pour grandir\nDates : Vendredi 18 décembre, 10h00 (2026)\nLieu : Médiathèque Côte Pavée, 125 Avenue Jean Rieux, 31400 Toulouse, France, Bonhoure / Guilheméry / Château de l'Hers / Limayrac / Côte Pavée\nDescription : Lectures et chansons pour les 0-3 ans\nVendredi 18 décembre à 10 h\nUn babil, une comptine, c’est bon pour les bébés !\nRenseignements et inscriptions au 05 67 72 84 50",
       "Titre : Quel cirque !\nDates : Mardi 27 octobre, 16h00 (2026)\nLieu : Médiathèque des Izards, 1 place Micoulaud 31200 Toulouse, Trois Cocus / Borderouge / Croix-Daurade / Paleficat / Grand Selve\nMots-clés : ToutUnCirque2026\nDescription : par la Compagnie Le chant de la baleine à bosse - CIRQUE\nMardi 27 octobre à 16h\n[Suite à l'annulation de cette lecture en juin 2026 à cause de la chaleur, elle est donc reportée à cette date du 27 octobre à 16h.] \nUn rendez-vous musical pour les familles autour d'albums jeunesse sur le monde du cirque.\nLes lectures sont entremêlées de chants, de sons, de bruitages. Cet univers sonore se déploie en direct à la voix, l'accordéon, ainsi qu'avec d'autres instruments en lien avec les histoires (boomwhakers, tongue drums, kazoo...).\nCette proposition se veut un moment de partage, d'écoute, de cocooning sonore pour les familles. Petits et grands pourront découvrir des comptines et des chansons de toujours ou créées pour l'occasion, vocaliser, rêver, observer, participer rythmiquement avec les mains, les pieds, la langue...\nChansons à gestes, comptines, percussions corporelles, seront autant de propositions pour accompagner la parentalité et créer du lien dans la vie des familles.\nDistribution :\nMagali Germain : lecture, acrobaties vocales et instrumentales.\nValérie Darnatigues : lecture et jonglage de mots\nMédiathèque des Izards\nInscription au 05 61 54 72 91\nDurée : 30mn - Dès 6 mois jusqu’à 5 ans."
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 0.4,
+      "answer_relevancy": 0.0,
+      "llm_context_precision_with_reference": 0.0,
+      "context_recall": 0.0
+    }
   },
   {
     "id": "reco-02",
@@ -213,7 +255,13 @@
       "Titre : Bavardages : Ateliers de conversation en français\nDates : 2 octobre - 4 décembre, certains vendredis (2026)\nLieu : Médiathèque Pradettes, 3 Avenue de la Dépêche, 31100 Toulouse, France, Lardenne / Pradettes / Basso-Cambo\nDescription : Conversations - Français - Apprentissage\n1er vendredi du mois 10h – 12h  \nVous apprenez le français et vous voulez vous améliorer ?\nL'une des meilleures façons est de le pratiquer et de l'entendre.\nLe rendez-vous Bavardages propose un temps de discussion en français dans une ambiance conviviale, sans aucun jugement et quel que soit votre niveau ou votre nationalité.\nCes ateliers gratuits, accompagnés par des bibliothécaires, vous permettent de progresser en découvrant et discutant de livres, films, spectacles ou encore autour de la culture, les traditions ou l’histoire d’un pays ou de ceux des autres participants.",
       "Titre : Quiz sur le cinéma\nDates : Samedi 19 septembre, 15h30 (2026)\nLieu : Cinémathèque de Toulouse, 69 Rue du Taur, 31000 Toulouse, France, Capitole / Arnaud Bernard / Carmes\nDescription : Venez tester vos connaissances sur le cinéma !\nVenez tester vos connaissances sur le cinéma et tentez de remporter des places de cinéma et des affiches.\nConditions : Entrée libre dans la limite des places disponibles, être obligatoirement muni·e d'un smartphone. Gratuit."
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 0.875,
+      "answer_relevancy": 0.885,
+      "llm_context_precision_with_reference": 0.5,
+      "context_recall": 0.5
+    }
   },
   {
     "id": "reco-03",
@@ -239,7 +287,13 @@
       "Titre : Concert\nDates : Samedi 12 décembre, 18h00 (2026)\nLieu : Auditorium Saint-Pierre des Cuisines, 12 place Saint-Pierre 31000 Toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Hautbois et Basson\nRÉSERVATION : à partir du 2 décembre 2026, 12h\nhttps://billetterie.festik.net/crrtoulouse/\n(Même si le concert affiche complet, quelques places pourraient se libérer juste avant le début. Nous vous invitons à vous présenter sur place)\nConcert de Noël des classes de hautbois et bassons du Conservatoire.\nConditions : Entrée gratuite sur réservation",
       "Titre : Concert\nDates : Dimanche 13 décembre, 17h00 (2026)\nLieu : Auditorium Saint-Pierre des Cuisines, 12 place Saint-Pierre 31000 Toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Chorales des élèves en Horaires Aménagés Primaire et Petites voix\nRÉSERVATION : à partir du 03 Décembre 2026, 12h\nhttps://billetterie.festik.net/crrtoulouse/\n(Même si le concert affiche complet, quelques places pourraient se libérer juste avant le début. Nous vous invitons à vous présenter sur place)\nPROGRAMME : à venir\nConditions : Entrée gratuite sur réservation"
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 0.667,
+      "answer_relevancy": 0.0,
+      "llm_context_precision_with_reference": 0.0,
+      "context_recall": 1.0
+    }
   },
   {
     "id": "reco-04",
@@ -268,7 +322,13 @@
       "Titre : Les données satellites aident-elles à visionner le futur ?\nDates : Mardi 13 octobre, 09h30 (2026)\nLieu : Maison des Chômeurs Avenir Saouzelong, 115 Rue Bonnat, 31400 Toulouse, Rangueil / Sauzelong / Pech-David / Pouvourville\nMots-clés : lsq, Lumières sur le Quai, rencontres, petit dejeuner, petit dej, débat\nDescription : Rencontre avec l'ingénieure du CNES Agnès Verzeni pour un petit déjeuner débat à la maison des chômeurs Avenir sur le thème des satellites. Dans le cadre du festival Lumières sur le Quai 2026.\nPetit déjeuner débat\nEntre science et curiosité, une ingénieure dévoile le quotidien de son métier et comment des données satellites permettent d’explorer l’environnement depuis l’espace, d‘observer et d’anticiper les impacts des changements climatiques.  \nAvec : Agnès Verzeni, Ingénieure en applications spatiales pour l’observation de la Terre (CNES).\nDate et horaire :\nmardi 13 octobre de 9h30 à 11h\n+ d'infos :\ngratuit\ntout public\nlieu : Maison des chômeurs Avenir Nouvelle\nDans le cadre du festival Lumières sur le Quai 2026 sur le thème \"Nos futurs ensemble\" du 17/10 au 1/11 au Quai des Savoirs :\nprogrammation à venir\nConditions : Gratuit",
       "Titre : Comment explorer Mars et la Lune aujourd’hui ?\nDates : Mardi 20 octobre, 10h30 (2026)\nLieu : Quai des Savoirs - Toulouse, Allée Matilda, 31000 Toulouse, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nMots-clés : lsq, Lumières sur le Quai, rencontre, rencontres, conférence, conférences\nDescription : Les enfants (et leurs parents !) découvriront les coulisses de l'exploration spatiale. Conférence par Charles Yana, ingénieur au CNES de Toulouse. Dans le cadre du festival Lumières sur le Quai 2026.\nMars et la Lune n'ont jamais été aussi proches... ou presque !\nComment explore-t-on ces mondes lointains ? Les célèbres rovers Curiosity et Perseverance sont-ils toujours à l'œuvre sur Mars ? Comment envoie-t-on des messages à des millions de kilomètres de la Terre ? Et quels sont les obstacles à surmonter pour préparer les futures missions spatiales ?\nAu cours de cette conférence interactive, les enfants (et leurs parents !) découvriront les coulisses de l'exploration spatiale et les défis passionnants que relèvent chaque jour les équipes d'ingénieurs et scientifiques. Une occasion unique de poser toutes vos questions et de connaitre l'actualité des missions spatiales.\nIntervenant : Charles Yana, ingénieur au CNES de Toulouse.\nDate et horaire :\nmardi 20 octobre de 10h30 à 11h30\n+ d'infos :\npublic enfant à partir de 9 ans\ngratuit sur inscription (à venir)\nDans le cadre du festival Lumières sur le Quai 2026 sur le thème \"Nos futurs ensemble\" du 17/10 au 1/11 au Quai des Savoirs :\nprogrammation à venir\nConditions : Gratuit sur inscription (à venir)"
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 0.4,
+      "answer_relevancy": 0.833,
+      "llm_context_precision_with_reference": 0.367,
+      "context_recall": 0.75
+    }
   },
   {
     "id": "reco-05",
@@ -299,7 +359,13 @@
       "Titre : Jeu de piste nocturne\nDates : Jeudi 22 octobre, 19h30 (2026)\nLieu : Chapelle des Carmélites, 1 Rue du Périgord, 31000 Toulouse, France, Capitole / Arnaud Bernard / Carmes\nDescription : Une enquête immersive nocturne en équipe, pour découvrir l’histoire de la construction de la chapelle et à la naissance de l’Ordre des Carmels.\nUne enquête immersive à la lueur de votre torche\nEt si la chapelle des Carmélites vous révélait ses secrets à la tombée de la nuit ?\nUne expérience entre jeu d’enquête, observation architecturale et découverte historique, au cœur de ce lieu patrimonial exceptionnel et confidentiel.\nDès votre arrivée, vous entrez dans une chapelle entièrement plongée dans la pénombre. Armés d’une lampe torche et d’une besace, votre équipe part à la recherche d’indices pour résoudre l’ensemble des énigmes. À travers des recherches d’éléments dans l’architecture et des moments d’observation, les participants découvrent l’histoire du lieu de manière ludique.\nUne expérience insolite au final lumineux\nAucune connaissance préalable requise : curiosité, sens de l’observation et esprit d’équipe suffisent ! Chaque groupe participe à sa manière à la reconstitution du mystère. Et tous les participants repartent avec une surprise symbolique offerte en fin de parcours.\nL’expérience se conclut par un moment fort : la chapelle s’illumine pour révéler le lieu dans sa globalité. Le visiteur découvre alors la splendeur des plafonds monumentaux de la chapelle et l’œuvre - aperçue partiellement grâce au faisceau de sa lampe torche - dans sa globalité.\nConditions : 12€",
       "Titre : Escape game : La menace des livres contaminés\nDates : Vendredi 23 octobre, 17h30 (2026)\nLieu : Bibliothèque d’Étude et du Patrimoine, 1 Rue du Périgord, 31000 Toulouse, France, Capitole / Arnaud Bernard / Carmes\nDescription : Vendredi 23 octobre - 17h30\nVous êtes une équipe d’enquêteurs chevronnés engagée par la Bibliothèque d’étude et du patrimoine pour résoudre une étrange affaire de livres contaminés... L’urgence est de taille car l'accueil des visiteurs est compromis ! Serez-vous prêt à relever le défi ?\nBibliothèque d’étude et du patrimoine – Salle Régionale\nDurée : 1h - De 8 à 12 ans (parents acceptés)\nSur inscription à mediation.bep@mairie-toulouse.fr"
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 0.667,
+      "answer_relevancy": 0.747,
+      "llm_context_precision_with_reference": null,
+      "context_recall": 0.5
+    }
   },
   {
     "id": "temp-01",
@@ -330,7 +396,13 @@
       "Titre : Concert tôt\nDates : Jeudi 14 janvier 2027, 18h30\nLieu : CRR-Espace Varèse, 17, rue larrey 31000 toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Le Conservatoire de Toulouse propose ce format d’auditions dont l’objectif est de prendre part à des moments musicaux montrant la diversité des pratiques instrumentales en croisant les élèves issus des différentes classes.\nLes « Grandes Scènes » permettent aux élèves plus avancés de se produire. Ces moments musicaux peuvent aussi être l’occasion pour les élèves plus jeunes de venir découvrir des instruments qu’ils ne connaissent pas.\nConditions : Entrée libre dans la limite des places disponibles",
       "Titre : Concert tôt\nDates : Jeudi 18 mars 2027, 18h30\nLieu : CRR-Espace Varèse, 17, rue larrey 31000 toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Le Conservatoire de Toulouse propose ce format d’auditions dont l’objectif est de prendre part à des moments musicaux montrant la diversité des pratiques instrumentales en croisant les élèves issus des différentes classes.\nLes « Grandes Scènes » permettent aux élèves plus avancés de se produire. Ces moments musicaux peuvent aussi être l’occasion pour les élèves plus jeunes de venir découvrir des instruments qu’ils ne connaissent pas.\nConditions : Entrée libre dans la limite des places disponibles"
     ],
-    "hit": false
+    "hit": false,
+    "ragas": {
+      "faithfulness": 0.0,
+      "answer_relevancy": 0.0,
+      "llm_context_precision_with_reference": 0.0,
+      "context_recall": 0.0
+    }
   },
   {
     "id": "temp-02",
@@ -366,7 +438,13 @@
       "Titre : Explorons nos savoir-faire\nDates : Samedi 17 octobre, 14h00 (2026)\nLieu : Médiathèque José Cabanis, 1 All Jacques Chaban-Delmas, 31500 Toulouse, Lapujade / Bonnefoy / Périole / Marengo / La Colonne\nDescription : Forum associatif et ateliers avec le collectif Chemin Faisant - EXplorations\nSamedi 17 octobre de 14h à 18h\nDe la réparation de son électroménager à la fabrication de ses produits d’entretien, en passant par l'observation de la biodiversité en bas de chez soi, nous vous proposons de découvrir et de partager des savoir-faire pour gagner en autonomie.\nDes vêtements à réparer ? Venez avec votre chemise trouée et apprenez à la customiser.\nDes produits toxiques dans votre quotidien ? Venez fabriquer vous-même vos produits d’entretien.\nEnvie d’apprendre à cultiver votre propre potager, même sur votre balcon ? Venez planter des potimarrons.\nExplorons ensemble nos espaces du quotidien pour gagner en créativité et reprendre du pouvoir d’agir.\nChemin Faisant est un collectif d'associations toulousaines d’éducation à l'environnement et à l’écologie. Nous avons pour objectif d’éveiller les différents publics au monde environnant à travers la découverte et l’échange de savoirs et de connaissances. Nous agissons pour une ville durable en mettant en œuvre des solutions accessibles à toutes et tous.\nDans le cadre des Journées nationales de la réparation.\nMédiathèque José Cabanis",
       "Titre : Des lectures coups de coeur pour les Bébés explorateurs\nDates : Samedi 3 octobre, 10h30 (2026)\nLieu : Muséum d'histoire naturelle de Toulouse_médiathèque jeunesse Pourquoi Pas ?, 35 allées Jules Guesde 31000 Toulouse, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nDescription : Biblis en folie 2026\nVenez partager un moment convivial avec les médiathécaires qui feront découvrir aux tout-petits de 0 à 3 ans leurs albums et comptines préférés !\nConditions : atelier limité à 12 enfants + 2 accompagnateurs par enfant"
     ],
-    "hit": false
+    "hit": false,
+    "ragas": {
+      "faithfulness": 0.4,
+      "answer_relevancy": 0.757,
+      "llm_context_precision_with_reference": 0.0,
+      "context_recall": 0.0
+    }
   },
   {
     "id": "temp-03",
@@ -402,7 +480,13 @@
       "Titre : Microb-ID\nDates : 21 - 25 octobre (2026)\nLieu : Quai des Savoirs - Toulouse, Allée Matilda, 31000 Toulouse, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nMots-clés : lsq, Lumières sur le Quai, ateliers, animation, animations\nDescription : Un jeu immersif ludique pour enfant et adulte, entre le jeu de rôle et l'Escape Game. Dans le cadre du festival Lumières sur le Quai 2026.\nUn patient est amené au service des maladies infectieuses dans un état critique. Votre mission : mener l’enquête pour identifier à temps le microbe incriminé et prescrire le traitement adapté. Vous serez aidé par votre équipe scientifique et médicale. A votre disposition, des appareils à la pointe de la technologie : extracteur automatique d’ADN, spectromètre de masse MALDI-TOF, thermocycleur… Vous aurez 45 min pour sauver votre patient, pas 1 de plus !  \nCe jeu d’immersion est à la fois un jeu de rôle et un Escape Game. Un atelier pédagogique… mais surtout très ludique. Aucune connaissance scientifique n’est nécessaire : vous serez guidés par le Maitre du jeu. Venez jouer en famille !\nAvec Anne Keriel de l'Inserm.  \nUn atelier dans le cadre du Programme FEDER AGESIAR-2, en partenariat avec l’école de l’ADN, l'Université de Nîmes et la région Occitanie.\nDates et horaires :\ndu 21 au 25 octobre à 11h, 14h30, 16h30\ndurée : entre 1h15 et 1h30\n+ d'infos :\ntout public dès 9 ans\ngratuit sur inscription (à venir)\nDans le cadre du festival Lumières sur le Quai 2026 sur le thème \"Nos futurs ensemble\" du 17/10 au 1/11 au Quai des Savoirs :\nprogrammation à venir\nConditions : Gratuit sur inscription (à venir)",
       "Titre : Visite flash des coulisses du Quai\nDates : 19 et 20 septembre (2026)\nLieu : Quai des Savoirs - Toulouse, Allée Matilda, 31000 Toulouse, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nMots-clés : JEP, visites, accessibilité, lsf, sourd et malentendant\nDescription : Une visite en mode flash de 30 minutes pour découvrir les coulisses du Quai des Savoirs ! Dans le cadre des Journées Européennes du Patrimoine.\nAccédez à une partie des espaces habituellement réservé aux professionnels de ce lieu culturel nouvelle génération dédié aux sciences, aux technologies et à la création.\nVisite du dimanche 20 septembre à 14h30 programmée avec Villes pour tous. Les personnes sourdes ou malentendantes sont invitées à écrire avant le 16 septembre à l'adresse domaine.handicap.accessibilite@mairie-toulouse.fr pour bénéficier d'une interprétation en LSF.\nDates et horaires :\nsamedi 19 septembre : 14h30 et 15h30\ndimanche 20 septembre : 14h30, 15h30, 16h30\ndurée : 30 min\n+ d'infos :\ngratuit, retrait de billet à l'accueil du Quai\ntout public\nJournées Européennes du Patrimoine 2026 au Quai des Savoirs\nRetrouvez toute la programmation\nConditions : Gratuit, retrait de billet à l'accueil du Quai"
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 0.933,
+      "answer_relevancy": 0.854,
+      "llm_context_precision_with_reference": 0.0,
+      "context_recall": 0.0
+    }
   },
   {
     "id": "temp-04",
@@ -542,6 +626,12 @@
       "Titre : Le Cercle Photographique des XII (1952-1981)\nDates : 22 juin - 24 septembre 2027\nLieu : Médiathèque José-Cabanis, 1 allée Jacques Chaban-Delmas, 31500 Toulouse, Lapujade / Bonnefoy / Périole / Marengo / La Colonne\nDescription : Parmi les photographes qui ont choisi de transmettre leur patrimoine au public, plusieurs ont fait partie du Cercle photographique des XII, association créée en 1936 par des dissidents du photo-club toulousain en vue de promouvoir une esthétique nouvelle. L’enjeu était d’élever la photographie au rang de discipline artistique. Les membres les plus illustres sont Germaine Chaumel, Jean Dieuzaide et André Cros, les deux derniers ayant très activement participé au projet du Château d’Eau, premier espace public dédié à l’exposition de photographie en France. Plusieurs autres membres voient leurs travaux conservés dans nos fonds, ce qui permet de mettre en lumière le projet esthétique du groupe entre 1936 (création des statuts) et 1989 (dernière exposition). Ce sont une quarantaine de membres, amateurs et professionnels, qui se sont succédés à raison de douze maximum à la fois, et ont participé à rendre évident le projet d’une galerie dédiée à la photographie à Jean Dieuzaide d’ouvrir la galerie du Château d’Eau en 1974.",
       "Titre : Le Cercle Photographique des XII (1936-1952)\nDates : 22 juin - 24 septembre 2027\nLieu : Bibliothèque d'étude et du patrimoine, 1 rue de Périgord, 31000 Toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Parmi les photographes qui ont choisi de transmettre leur patrimoine au public, plusieurs ont fait partie du Cercle photographique des XII, association créée en 1936 par des dissidents du photo-club toulousain en vue de promouvoir une esthétique nouvelle. L’enjeu était d’élever la photographie au rang de discipline artistique. Les membres les plus illustres sont Germaine Chaumel, Jean Dieuzaide et André Cros, les deux derniers ayant très activement participé au projet du Château d’Eau, premier espace public dédié à l’exposition de photographie en France. Plusieurs autres membres voient leurs travaux conservés dans nos fonds, ce qui permet de mettre en lumière le projet esthétique du groupe entre 1936 (création des statuts) et 1989 (dernière exposition). Ce sont une quarantaine de membres, amateurs et professionnels, qui se sont succédés à raison de douze maximum à la fois, et ont participé à rendre évident le projet d’une galerie dédiée à la photographie à Jean Dieuzaide d’ouvrir la galerie du Château d’Eau en 1974."
     ],
-    "hit": true
+    "hit": true,
+    "ragas": {
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.0,
+      "llm_context_precision_with_reference": 0.5,
+      "context_recall": 0.0
+    }
   }
 ]
