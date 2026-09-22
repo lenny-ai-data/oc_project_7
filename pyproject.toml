@@ -31,8 +31,17 @@ dev = [
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
     "ragas>=0.4.3",
+    "ruff>=0.16.8",
 ]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]  # permet aux tests d'importer le dossier rag/
 testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["rag", "api"]
+
+[tool.coverage.report]
+# Les blocs `python -m` servent à lancer et visualiser une étape à la main : ce
+# n'est pas de la logique métier, et les tester reviendrait à tester des print
+exclude_also = ["if __name__ == .__main__.:"]

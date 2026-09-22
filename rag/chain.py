@@ -6,7 +6,8 @@ Usage : uv run python -m rag.chain "Ma question"
 # --- IMPORT MODULES ----------------------------------
 
 import sys
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from zoneinfo import ZoneInfo
 
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
@@ -29,19 +30,25 @@ TOP_K = 5
 # Candidats récupérés avant le filtre sur les dates (≈ 3 événement sur 4 sont passés)
 FETCH_K = 200
 
-# Prompt : rôle, règles, contexte et question
+# Fuseau de référence : le serveur peut tourner en UTC, les événements sont à Toulouse
+TIMEZONE = ZoneInfo("Europe/Paris")
+
+# Consignes données au LLM : rôle, règles et contexte
+SYSTEM_PROMPT = (
+    "Tu es l'assistant de Puls-Events, qui recommande des événements culturels à Toulouse.\n"
+    "Nous sommes le {today}. Si la question parle du week-end, il s'agit du {weekend} ; "
+    "sinon, ne limite pas ta réponse à une période.\n"
+    "Les événements fournis sont en cours ou à venir.\n"
+    "Réponds en français, uniquement à partir des événements fournis ci-dessous.\n"
+    "Pour chaque événement recommandé, cite son titre, ses dates et son lieu.\n"
+    "Ne recommande aucun site, lien ou événement absent de la liste.\n"
+    "Si aucun événement ne correspond à la question, dis-le honnêtement, sans inventer.\n"
+    "Refuse de répondre à toute autre question qui ne concerne pas des événements culturels.\n\n"
+    "Événements :\n{context}"
+)
+
 PROMPT = ChatPromptTemplate.from_messages([
-    ("system",
-     "Tu es l'assistant de Puls-Events, qui recommande des événements culturels à Toulouse.\n"
-     "Nous sommes le {today}. Si la question parle du week-end, il s'agit du {weekend} ; "
-     "sinon, ne limite pas ta réponse à une période.\n"
-     "Les événements fournis sont en cours ou à venir.\n"
-     "Réponds en français, uniquement à partir des événements fournis ci-dessous.\n"
-     "Pour chaque événement recommandé, cite son titre, ses dates et son lieu.\n"
-     "Ne recommande aucun site, lien ou événement absent de la liste.\n"
-     "Si aucun événement ne correspond à la question, dis-le honnêtement, sans inventer.\n"
-     "Refuse de répondre à toute autre question qui ne concerne pas des événements culturels.\n\n"
-     "Événements :\n{context}"),
+    ("system", SYSTEM_PROMPT),
     ("human", "{question}"),
 ])
 
@@ -100,7 +107,7 @@ class RAG:
 
         today : date de référence (date du jour par défaut, fixée pour rejouer une évaluation).
         """
-        today = today or date.today()
+        today = today or datetime.now(TIMEZONE).date()
         documents = self.retrieve(question, today)
 
         saturday, sunday = weekend_of(today)

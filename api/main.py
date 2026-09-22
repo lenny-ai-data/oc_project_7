@@ -17,7 +17,7 @@ from fastapi import FastAPI, HTTPException, Security
 from fastapi.security import APIKeyHeader
 from pydantic import BaseModel, ConfigDict, Field
 
-from rag.chain import INDEX_NAME, LLM_MODEL, RAG, TOP_K
+from rag.chain import INDEX_NAME, LLM_MODEL, RAG, TIMEZONE, TOP_K
 from rag.collect import CITY, START_DATE
 from rag.index import EMBEDDING_MODEL, INDEX_DIR, rebuild_index
 
@@ -35,6 +35,9 @@ TOKEN_HEADER = APIKeyHeader(name="X-Token", auto_error=False, description="Valeu
 # Une seule reconstruction à la fois
 REBUILD_LOCK = threading.Lock()
 
+# Commit déployé, injecté par Render ; absent en local
+REVISION = os.getenv("RENDER_GIT_COMMIT")
+
 # --- ÉTAT DE L'API ----------------------------------
 
 # Système RAG chargé une seule fois au démarrage (voir lifespan)
@@ -49,6 +52,7 @@ class Health(BaseModel):
 
     status: str = Field(description="ok si l'API peut répondre, degraded si l'index est absent")
     index: str
+    revision: str | None = Field(default=None, description="Commit déployé, pour vérifier qu'une mise en ligne est effective")
     error: str | None = None
 
 class Metadata(BaseModel):
@@ -134,7 +138,7 @@ async def lifespan(app: FastAPI):
     global rag_system, startup_error
     try:
         rag_system = RAG()
-    except Exception as error:
+    except Exception as error:  # noqa: BLE001 - toute panne au démarrage doit être signalée, pas propagée
         startup_error = f"{type(error).__name__} : {error}"
     yield
 
@@ -151,8 +155,8 @@ app = FastAPI(
 def health() -> Health:
     """Vérifie que l'API est prête à répondre (index chargé)"""
     if rag_system is None:
-        return Health(status="degraded", index="absent", error=startup_error)
-    return Health(status="ok", index=INDEX_NAME)
+        return Health(status="degraded", index="absent", revision=REVISION, error=startup_error)
+    return Health(status="ok", index=INDEX_NAME, revision=REVISION)
 
 @app.get("/metadata", summary="Périmètre et configuration du POC")
 def metadata() -> Metadata:
@@ -168,7 +172,7 @@ def metadata() -> Metadata:
         llm_model=LLM_MODEL,
         top_k=TOP_K,
         index_name=INDEX_NAME,
-        index_built_at=datetime.fromtimestamp(INDEX_FILE.stat().st_mtime).date().isoformat(),
+        index_built_at=datetime.fromtimestamp(INDEX_FILE.stat().st_mtime, tz=TIMEZONE).date().isoformat(),
     )
 
 @app.post("/ask", summary="Poser une question sur les événements")
