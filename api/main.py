@@ -5,20 +5,35 @@ Usage : uv run uvicorn api.main:app --reload   (documentation interactive sur /d
 
 # --- IMPORT MODULES ----------------------------------
 
+import os
+import secrets
+import threading
+import time
 from contextlib import asynccontextmanager
 from datetime import date, datetime
 
-from fastapi import FastAPI, HTTPException
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException, Security
+from fastapi.security import APIKeyHeader
 from pydantic import BaseModel, ConfigDict, Field
 
 from rag.chain import INDEX_NAME, LLM_MODEL, RAG, TOP_K
 from rag.collect import CITY, START_DATE
-from rag.index import EMBEDDING_MODEL, INDEX_DIR
+from rag.index import EMBEDDING_MODEL, INDEX_DIR, rebuild_index
 
 # --- CONSTANTES ----------------------------------
 
+# MISTRAL_API_KEY et AUTH_TOKEN
+load_dotenv()
+
 # Fichier de vecteurs, dont la date de modification sert de date de construction de l'index
 INDEX_FILE = INDEX_DIR / INDEX_NAME / "index.faiss"
+
+# En-tête qui porte le jeton (bouton « Authorize » dans Swagger)
+TOKEN_HEADER = APIKeyHeader(name="X-Token", auto_error=False, description="Valeur de AUTH_TOKEN")
+
+# Une seule reconstruction à la fois
+REBUILD_LOCK = threading.Lock()
 
 # --- ÉTAT DE L'API ----------------------------------
 
@@ -59,7 +74,7 @@ class Question(BaseModel):
     question: str = Field(
         min_length=3, max_length=500,
         description="Question en langage naturel sur les événements culturels de Toulouse",
-        examples=["Je cherche un concert de jazz, tu as des idées ?"],
+        examples=["Je cherche un spectacle pour enfant ce week-end, tu as des idées ?"],
     )
     today: date | None = Field(
         default=None,
@@ -81,6 +96,13 @@ class Answer(BaseModel):
     answer: str
     sources: list[Source]
 
+class Rebuild(BaseModel):
+    """Résultat d'une reconstruction de l'index."""
+
+    events: int
+    vectors: int
+    seconds: float = Field(description="Durée de la reconstruction")
+
 # --- FONCTIONS ----------------------------------
 
 def require_rag() -> RAG:
@@ -88,6 +110,15 @@ def require_rag() -> RAG:
     if rag_system is None:
         raise HTTPException(503, f"Index indisponible : {startup_error}")
     return rag_system
+
+def check_token(token: str | None) -> None:
+    """Vérifie le jeton, ou désactive la route si AUTH_TOKEN n'est pas défini"""
+    expected = os.getenv("AUTH_TOKEN")
+    if not expected:
+        raise HTTPException(503, "AUTH_TOKEN n'est pas défini, route désactivée")
+    # compare_digest plutôt que != : comparaison à durée constante pour ne rien révéler
+    if not secrets.compare_digest(token or "", expected):
+        raise HTTPException(401, "Jeton invalide")
 
 def count_events(rag: RAG) -> int:
     """Compte les événements distincts de l'index"""
@@ -141,8 +172,12 @@ def metadata() -> Metadata:
     )
 
 @app.post("/ask", summary="Poser une question sur les événements")
-def ask(request: Question) -> Answer:
-    """Recherche les événements à venir les plus proches de la question et génère une réponse."""
+def ask(request: Question, token: str | None = Security(TOKEN_HEADER)) -> Answer:
+    """Recherche les événements à venir les plus proches de la question et génère une réponse.
+
+    Protégée par un jeton : chaque question consomme du quota Mistral.
+    """
+    check_token(token)
     rag = require_rag()
     try:
         result = rag.ask(request.question, request.today)
@@ -150,3 +185,26 @@ def ask(request: Question) -> Answer:
         # Mistral indisponible, quota dépassé, clé invalide : l'API dépend d'un service tiers
         raise HTTPException(502, f"Le service Mistral n'a pas répondu : {type(error).__name__}") from error
     return Answer(answer=result["answer"], sources=result["sources"])
+
+@app.post("/rebuild", summary="Reconstruire l'index à partir des données Open Agenda")
+def rebuild(token: str | None = Security(TOKEN_HEADER)) -> Rebuild:
+    """Recollecte, nettoie et revectorise les événements, puis recharge l'index sans redémarrer l'API.
+
+    Opération longue (plusieurs minutes) et facturée par Mistral, protégée par un jeton.
+    L'index en service n'est remplacé qu'en cas de succès.
+    """
+    global rag_system, startup_error
+    check_token(token)
+    if not REBUILD_LOCK.acquire(blocking=False):
+        raise HTTPException(409, "Une reconstruction est déjà en cours")
+    try:
+        start = time.perf_counter()
+        index = rebuild_index(INDEX_NAME)
+        rag_system, startup_error = RAG(index=index), None
+        return Rebuild(events=count_events(rag_system), vectors=index.index.ntotal,
+                       seconds=round(time.perf_counter() - start, 1))
+    except Exception as error:
+        # Open Agenda injoignable, données illisibles, quota Mistral dépassé
+        raise HTTPException(502, f"Échec de la reconstruction : {type(error).__name__}") from error
+    finally:
+        REBUILD_LOCK.release()

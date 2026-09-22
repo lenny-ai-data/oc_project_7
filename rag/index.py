@@ -16,7 +16,9 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 from langchain_mistralai import MistralAIEmbeddings
 
+from rag.collect import fetch_events, save_events
 from rag.documents import load_documents, split_documents
+from rag.preprocess import preprocess, save_processed
 
 # --- CONSTANTES ----------------------------------
 
@@ -57,6 +59,20 @@ def save_index(index: FAISS, path: Path = INDEX_DIR) -> None:
 def load_index(path: Path = INDEX_DIR) -> FAISS:
     """Recharge un index sauvegardé associé au modèle d'embeddings."""
     return FAISS.load_local(str(path), get_embeddings(), allow_dangerous_deserialization=True)
+
+def rebuild_index(name: str) -> FAISS:
+    """Rejoue toute la chaîne (collecte, nettoyage, découpage, vectorisation) et sauvegarde l'index.
+
+    Utilisé par l'API pour mettre l'index à jour avec les événements du jour.
+    """
+    events = fetch_events()
+    save_events(events)
+    save_processed(preprocess(events))
+
+    chunks = split_documents(load_documents(), *CONFIGS[name])
+    index = build_index(chunks)
+    save_index(index, INDEX_DIR / name)
+    return index
 
 # --- MAIN ----------------------------------
 

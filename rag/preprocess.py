@@ -86,11 +86,14 @@ def preprocess(events: list[dict]) -> pd.DataFrame:
     print(f"Événements conservés : {len(df)}")
     return df
 
+def save_processed(df: pd.DataFrame, path: Path = PROCESSED_PATH) -> None:
+    """Sauvegarde les événements nettoyés en JSON."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_json(path, orient="records", force_ascii=False, indent=2)
+
 # --- MAIN ----------------------------------
 
 if __name__ == "__main__":
     events = json.loads(RAW_PATH.read_text(encoding="utf-8"))
-    df = preprocess(events)
-    PROCESSED_PATH.parent.mkdir(parents=True, exist_ok=True)
-    df.to_json(PROCESSED_PATH, orient="records", force_ascii=False, indent=2)
+    save_processed(preprocess(events))
     print(f"Sauvegardé dans {PROCESSED_PATH}")
