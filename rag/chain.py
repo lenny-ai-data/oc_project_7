@@ -26,7 +26,7 @@ INDEX_NAME = "chunk_1000"
 LLM_MODEL = "ministral-14b-latest"
 TOP_K = 5
 
-# Candidats récupérés avant le filtre sur les dates (≈ 1 événement sur 4 est à venir)
+# Candidats récupérés avant le filtre sur les dates (≈ 3 événement sur 4 sont passés)
 FETCH_K = 200
 
 # Prompt : rôle, règles, contexte et question

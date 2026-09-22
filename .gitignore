@@ -20,3 +20,6 @@ CONSIGNE.md
 
 # Secrets
 .env
+# Rapports de couverture des tests
+.coverage
+tests/htmlcov/

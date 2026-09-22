@@ -76,4 +76,6 @@ uv run python -m rag.evaluate ragas no_chunk
 
 ```bash
 uv run pytest
+# Avec rapport
+uv run pytest --cov=rag --cov-report=html
 ```

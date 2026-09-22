@@ -27,6 +27,7 @@ dev = [
     "matplotlib>=3.11.2",
     "missingno>=0.5.2",
     "pytest>=9.1.1",
+	"pytest-cov>=7.1.0",
 ]
 
 [tool.pytest.ini_options]

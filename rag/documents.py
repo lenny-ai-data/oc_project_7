@@ -102,10 +102,11 @@ if __name__ == "__main__":
     lengths = sorted(len(doc.page_content) for doc in documents)
     print(f"\nLongueur des textes : médiane {lengths[len(lengths) // 2]}, max {lengths[-1]} caractères")
 
-    # Découpage : exemple sur le document le plus long
+    # Découpage
     chunks = split_documents(documents, chunk_size=1000, chunk_overlap=150)
     print(f"\nDécoupage à 1000 caractères : {len(chunks)} chunks")
 
+    # Exemple avec le plus long
     longest = max(documents, key=lambda doc: len(doc.page_content))
     longest_chunks = split_documents([longest], chunk_size=1000, chunk_overlap=150)
     print(f"Document le plus long -> {len(longest_chunks)} chunks, dont les 2 premiers :\n")
