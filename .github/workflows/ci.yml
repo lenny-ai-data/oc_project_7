@@ -1,0 +1,78 @@
+# Integration continue : qualite du code, suite de tests et construction de
+# l'image. Les trois verifications sont independantes.
+
+name: CI
+
+# Le projet n'utilise pas de PR : on verifie chaque push,
+# et workflow_dispatch permet de relancer depuis GitHub.
+on:
+  push:
+  workflow_dispatch:
+
+# Un nouveau push sur la meme branche annule le run precedent
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+# 1 job = 1 VM dediee
+jobs:
+
+  # ==================== QUALITE ====================
+  qualite:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.0.1
+        with:
+          enable-cache: true
+
+      - name: Installer l'environnement
+        run: uv sync --frozen
+
+      - name: Lint
+        run: uv run ruff check .
+
+  # ==================== TESTS ====================
+  tests:
+    name: Tests et couverture
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.0.1
+        with:
+          enable-cache: true
+
+      - name: Installer l'environnement
+        run: uv sync --frozen
+
+      # 18 tests passent, 2 s'ignorent faute de cle et de donnees brutes
+      - name: Tests et couverture
+        run: |
+          uv run pytest \
+            --cov \
+            --cov-report=term-missing \
+            --cov-report=html:tests/htmlcov \
+            --cov-fail-under=80
+
+      # Rapport consultable
+      - name: Publier le rapport de couverture
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: couverture
+          path: tests/htmlcov/
+
+  # ==================== IMAGE ====================
+  image:
+    name: Image Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Avec contexte reduit par .dockerignore
+      - name: Construire l'image
+        run: docker build -t puls-events:${{ github.sha }} .
