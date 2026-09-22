@@ -239,7 +239,70 @@ Limites observées (détaillées au §7.5) :
 
 ## 6. API et endpoints exposés
 
-*À compléter (étape 5).*
+L'API est implémentée dans [`api/main.py`](../api/main.py) avec **FastAPI**, retenu pour sa documentation interactive intégrée (Swagger sur `/docs`) et sa validation déclarative des requêtes par Pydantic. Elle ne contient aucune logique métier : elle importe la classe `RAG` et la fonction `rebuild_index` de `rag/`.
+
+```bash
+uv run uvicorn api.main:app --reload    # documentation sur http://127.0.0.1:8000/docs
+```
+
+### 6.1 Endpoints
+
+| Méthode | Route | Rôle | Jeton |
+|---|---|---|---|
+| GET | `/health` | État de l'API et de l'index | non |
+| GET | `/metadata` | Périmètre des données, volumes et modèles utilisés | non |
+| POST | `/ask` | Question en langage naturel → réponse et sources | oui |
+| POST | `/rebuild` | Reconstruction complète de l'index | oui |
+
+### 6.2 Format des échanges
+
+```bash
+curl -X POST http://127.0.0.1:8000/ask \
+  -H "Content-Type: application/json" -H "X-Token: $AUTH_TOKEN" \
+  -d '{"question": "Quels concerts sont prévus à Toulouse ?"}'
+```
+
+Réponse obtenue le 22/09/2026, tronquée à la première source :
+
+```json
+{
+  "answer": "Voici les concerts prévus à Toulouse parmi les événements fournis :\n\n1. **Concert de Bourrasque**\n   - **Dates** : Samedi 10 octobre 2026, à 20h30\n   - **Lieu** : COMDT, 5 rue du Pont de Tounis...",
+  "sources": [
+    {
+      "uid": "45816864",
+      "title": "Concert de Bourrasque",
+      "date_range": "Samedi 10 octobre, 20h30",
+      "location_name": "COMDT",
+      "url": "https://openagenda.com/o-agenda-des-tiers-lieux/events/concert-de-bourrasque"
+    }
+  ]
+}
+```
+
+Le champ optionnel `today` (date du jour par défaut) fixe la date de référence, pour rejouer une démonstration ou une évaluation à date constante. Les sources sont réduites aux cinq métadonnées utiles à un service client : le texte vectorisé fourni au LLM n'est pas renvoyé.
+
+### 6.3 Chargement de l'index et reconstruction
+
+- **Chargement unique au démarrage** (`lifespan`) : l'index et le client Mistral sont créés une fois pour toutes les requêtes. Un index absent ne fait pas échouer le démarrage — l'API reste joignable et signale le problème sur `/health`.
+- **`/rebuild` rejoue toute la chaîne** (collecte, nettoyage, découpage, vectorisation) et non la seule vectorisation : en conteneur, les données brutes ne sont pas embarquées. L'opération est synchrone et dure quelques minutes ; une coupure du client ne l'interrompt pas, la route s'exécutant dans un thread.
+- **L'index en service n'est remplacé qu'en cas de succès** : un échec de collecte laisse l'API répondre avec l'index précédent.
+- **Un verrou non bloquant** interdit deux reconstructions simultanées, qui écriraient les mêmes fichiers.
+
+### 6.4 Sécurité et gestion des erreurs
+
+Les deux routes qui consomment du quota Mistral sont protégées par un jeton porté par l'en-tête `X-Token` et comparé à la variable d'environnement `AUTH_TOKEN` (comparaison à durée constante, `secrets.compare_digest`). Si la variable n'est pas définie, ces routes sont **désactivées** plutôt qu'ouvertes : une mise en ligne mal configurée se remarque immédiatement. `/health` et `/metadata` restent publics — sans coût, et nécessaires aux sondes d'un hébergeur.
+
+| Code | Cas |
+|---|---|
+| 401 | Jeton absent ou invalide |
+| 409 | Reconstruction déjà en cours |
+| 422 | Question vide, trop longue ou absente (validation Pydantic) |
+| 502 | Échec du service Mistral, ou de la collecte pendant une reconstruction |
+| 503 | Index non chargé, ou route désactivée faute de `AUTH_TOKEN` |
+
+Les messages d'erreur ne révèlent que le type de l'exception, jamais le message brut du service tiers.
+
+**Tests** ([`tests/test_api.py`](../tests/test_api.py)) : 8 cas couvrant les quatre routes, sans appel réseau ni clé API. La classe `RAG` est branchée sur un index Faiss à faux embeddings et un faux LLM, et la reconstruction est simulée ; le `lifespan` n'est pas déclenché, si bien que la suite reste rejouable en intégration continue. Couverture de `api/main.py` : 95 %, les lignes non couvertes étant celles du `lifespan`.
 
 ---
 
@@ -356,6 +419,8 @@ P7/
 │   ├── index.py              # Vectorisation Mistral et index Faiss -> data/index/
 │   ├── chain.py              # Chaîne RAG : recherche, prompt et génération (classe RAG)
 │   └── evaluate.py           # Évaluation : exécution du jeu de test, hit@5, scores Ragas
+├── api/
+│   └── main.py               # API FastAPI : /health, /metadata, /ask, /rebuild
 ├── scripts/
 │   ├── check_env.py          # Vérification des imports et de la clé API Mistral
 │   ├── benchmark_faiss.py    # Comparaison des algorithmes d'index Faiss (Flat, HNSW, IVF, PQ)
