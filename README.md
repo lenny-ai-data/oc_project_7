@@ -59,6 +59,60 @@ Deux index sont construits, sans découpage (`no_chunk`, ~1 min) et avec découp
 uv run python -m rag.chain "Je cherche un concert de jazz, tu as des idées ?"
 ```
 
+## API
+
+Prérequis : un jeton dans le `.env` (`AUTH_TOKEN=...`), qui protège les routes consommant du quota Mistral.
+
+```bash
+uv run uvicorn api.main:app --reload
+```
+
+Documentation interactive sur http://127.0.0.1:8000/docs, avec un bouton **Authorize** pour saisir le jeton.
+
+| Méthode | Route | Rôle | Jeton |
+|---|---|---|---|
+| GET | `/health` | État de l'API et de l'index | non |
+| GET | `/metadata` | Zone, période, volumes et modèles utilisés | non |
+| POST | `/ask` | Question en langage naturel → réponse et sources | oui |
+| POST | `/rebuild` | Reconstruction complète de l'index | oui |
+
+### Poser une question
+
+```bash
+curl -X POST http://127.0.0.1:8000/ask \
+  -H "Content-Type: application/json" -H "X-Token: $AUTH_TOKEN" \
+  -d '{"question": "Quels concerts sont prévus à Toulouse ?"}'
+```
+
+> Sous PowerShell, `curl` est un alias d'`Invoke-WebRequest` : utiliser `curl.exe`.
+
+```python
+import requests
+
+response = requests.post(
+    "http://127.0.0.1:8000/ask",
+    json={"question": "Quels concerts sont prévus à Toulouse ?"},
+    headers={"X-Token": "votre-jeton"},
+)
+result = response.json()
+
+print(result["answer"])
+for source in result["sources"]:
+    print(f"- {source['title']} ({source['date_range']}, {source['location_name']})")
+```
+
+> Les données contiennent des caractères typographiques français absents de la page de code Windows : sur une console `cp1252`, lancer le script avec `PYTHONIOENCODING=utf-8` pour éviter une `UnicodeEncodeError`.
+
+Le champ optionnel `today` (`"2026-09-15"`) fixe la date de référence, pour rejouer une démonstration à date constante.
+
+### Reconstruire l'index
+
+```bash
+curl -X POST http://127.0.0.1:8000/rebuild -H "X-Token: $AUTH_TOKEN"
+```
+
+Rejoue toute la chaîne (collecte, nettoyage, vectorisation) et recharge l'index sans redémarrer l'API. Compter quelques minutes et une consommation de quota Mistral.
+
 ## Évaluation
 
 Le jeu de test annoté (20 questions, date de référence fixée) est dans `eval/test_set.json`.
