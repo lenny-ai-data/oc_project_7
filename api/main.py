@@ -6,10 +6,10 @@ Usage : uv run uvicorn api.main:app --reload   (documentation interactive sur /d
 # --- IMPORT MODULES ----------------------------------
 
 from contextlib import asynccontextmanager
-from datetime import datetime
+from datetime import date, datetime
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from rag.chain import INDEX_NAME, LLM_MODEL, RAG, TOP_K
 from rag.collect import CITY, START_DATE
@@ -27,7 +27,7 @@ INDEX_FILE = INDEX_DIR / INDEX_NAME / "index.faiss"
 rag_system: RAG | None = None
 startup_error: str | None = None
 
-# --- MODÈLES DE RÉPONSE ----------------------------------
+# --- MODÈLES DE DONNÉES ----------------------------------
 
 class Health(BaseModel):
     """État de l'API et de l'index."""
@@ -49,6 +49,37 @@ class Metadata(BaseModel):
     top_k: int = Field(description="Nombre d'événements fournis au LLM pour construire la réponse")
     index_name: str
     index_built_at: str
+
+class Question(BaseModel):
+    """Question posée au système RAG."""
+
+    # str_strip_whitespace : rejet des questions vides
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    question: str = Field(
+        min_length=3, max_length=500,
+        description="Question en langage naturel sur les événements culturels de Toulouse",
+        examples=["Je cherche un concert de jazz, tu as des idées ?"],
+    )
+    today: date | None = Field(
+        default=None,
+        description="Date de référence pour « ce week-end » et le filtre des événements passés (aujourd'hui par défaut)",
+    )
+
+class Source(BaseModel):
+    """Sources utilisées par le LLM, réduit aux métadonnées utiles."""
+
+    uid: str
+    title: str
+    date_range: str
+    location_name: str | None = None
+    url: str | None = None
+
+class Answer(BaseModel):
+    """Réponse générée et événements sur lesquels elle s'appuie."""
+
+    answer: str
+    sources: list[Source]
 
 # --- FONCTIONS ----------------------------------
 
@@ -108,3 +139,14 @@ def metadata() -> Metadata:
         index_name=INDEX_NAME,
         index_built_at=datetime.fromtimestamp(INDEX_FILE.stat().st_mtime).date().isoformat(),
     )
+
+@app.post("/ask", summary="Poser une question sur les événements")
+def ask(request: Question) -> Answer:
+    """Recherche les événements à venir les plus proches de la question et génère une réponse."""
+    rag = require_rag()
+    try:
+        result = rag.ask(request.question, request.today)
+    except Exception as error:
+        # Mistral indisponible, quota dépassé, clé invalide : l'API dépend d'un service tiers
+        raise HTTPException(502, f"Le service Mistral n'a pas répondu : {type(error).__name__}") from error
+    return Answer(answer=result["answer"], sources=result["sources"])
