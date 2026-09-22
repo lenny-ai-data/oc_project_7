@@ -76,3 +76,72 @@ jobs:
       # Avec contexte reduit par .dockerignore
       - name: Construire l'image
         run: docker build -t puls-events:${{ github.sha }} .
+
+  # ==================== DEPLOIEMENT ====================
+  # Render reconstruit l'image depuis GitHub. Ce job n'entre que sur main,
+  # et seulement si les trois verifications precedentes sont vertes.
+  deploiement:
+    name: Deploiement (Render)
+    needs: [qualite, tests, image]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    env:
+      SERVICE: ${{ vars.URL_SERVICE }}
+
+    steps:
+      # Aucun checkout : rien du depot n'est utilise ici
+      # Render reconstruit l'image a partir de GitHub
+      - name: Verifier la configuration
+        env:
+          CROCHET: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$SERVICE" ]; then
+            echo "::error::variable de depot URL_SERVICE absente (attendu : https://<service>.onrender.com)"
+            exit 1
+          fi
+          if [ -z "$CROCHET" ]; then
+            echo "::error::secret RENDER_DEPLOY_HOOK absent"
+            exit 1
+          fi
+          echo "Service cible : $SERVICE"
+
+      # Le crochet porte deja sa cle en parametre, d'ou le `&` : 
+      # `ref` designe le commit a deployer
+      - name: Declencher le deploiement
+        env:
+          CROCHET: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          code=$(curl -sS -X POST -o corps.json -w '%{http_code}' "$CROCHET&ref=$GITHUB_SHA")
+          cat corps.json; echo
+          # 202 : deploiement en cours, il prendra ce commit
+          case "$code" in
+            200|201|202) echo "Deploiement demande (HTTP $code)" ;;
+            *) echo "::error::le crochet a repondu HTTP $code"; exit 1 ;;
+          esac
+
+      # Render sert l'ancienne version pendant qu'il construit la nouvelle.
+      # /health porte la revision deployee ET l'etat de l'index : on attend la
+      # bonne revision, puis on exige status = ok.
+      - name: Verifier le service deploye
+        run: |
+          echo "Attente de la revision $GITHUB_SHA sur $SERVICE"
+          for tentative in $(seq 1 60); do
+            reponse=$(curl -sS --max-time 20 "$SERVICE/health" || true)
+            revision=$(echo "$reponse" | jq -r '.revision // ""' 2>/dev/null || true)
+
+            # Comparaison sur 7 caracteres : Render peut exposer un SHA court
+            if [ -n "$revision" ] && [ "${revision:0:7}" = "${GITHUB_SHA:0:7}" ]; then
+              statut=$(echo "$reponse" | jq -r '.status')
+              echo "Revision en ligne apres $((tentative * 15))s, statut : $statut"
+              [ "$statut" = "ok" ] && exit 0
+              echo "::error::index non charge : $(echo "$reponse" | jq -r '.error')"
+              exit 1
+            fi
+
+            echo "  tentative $tentative : en ligne = ${revision:-aucune reponse}"
+            sleep 15
+          done
+          echo "::error::revision $GITHUB_SHA absente apres 15 min : deploiement trop long, ou RENDER_GIT_COMMIT non expose par l'hebergeur"
+          exit 1
