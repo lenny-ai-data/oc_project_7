@@ -15,7 +15,6 @@ dependencies = [
     "langchain-mistralai>=1.1.6",
     "pandas>=3.0.5",
     "python-dotenv>=1.2.3",
-    "ragas>=0.4.3",
     "requests>=2.34.2",
     "uvicorn>=0.53.0",
 ]
@@ -31,6 +30,7 @@ dev = [
     "missingno>=0.5.2",
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
+    "ragas>=0.4.3",
 ]
 
 [tool.pytest.ini_options]

@@ -1,0 +1,27 @@
+# Environnement et artefacts locaux
+.venv/
+__pycache__/
+*.py[co]
+.coverage
+
+# Historique et intégration continue
+.git/
+.gitignore
+.github/
+
+# Inutile à l'exécution de l'API
+tests/
+scripts/
+eval/
+docs/
+livrables/
+assets/
+CONSIGNE.md
+
+# Données : seul l'index retenu entre dans l'image
+data/raw/
+data/processed/
+data/index/no_chunk/
+
+# Secrets : clé Mistral et jeton fournis au lancement
+.env
