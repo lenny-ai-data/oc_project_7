@@ -304,6 +304,60 @@ Les messages d'erreur ne révèlent que le type de l'exception, jamais le messag
 
 **Tests** ([`tests/test_api.py`](../tests/test_api.py)) : 8 cas couvrant les quatre routes, sans appel réseau ni clé API. La classe `RAG` est branchée sur un index Faiss à faux embeddings et un faux LLM, et la reconstruction est simulée ; le `lifespan` n'est pas déclenché, si bien que la suite reste rejouable en intégration continue. Couverture de `api/main.py` : 95 %, les lignes non couvertes étant celles du `lifespan`.
 
+### 6.5 Conteneurisation
+
+Le [`Dockerfile`](../Dockerfile) part de l'image officielle `uv`, qui épingle uv et Python 3.13 dans un seul tag. Les dépendances sont installées **avant** la copie du code : tant qu'`uv.lock` ne change pas, Docker réutilise cette couche et une modification du code ne relance pas l'installation.
+
+```bash
+docker build -t puls-events .
+docker run --rm -p 8000:8000 --env-file .env puls-events
+```
+
+| Choix | Raison |
+|---|---|
+| `uv sync --frozen --no-dev` | pytest, ruff et ragas restent hors de l'image |
+| Index `chunk_1000` embarqué (32 Mo) | Le conteneur répond dès le démarrage, sans reconstruction |
+| `data/raw` et `data/processed` exclus | Inutiles à l'exécution ; c'est `/rebuild` qui les régénère |
+| `USER app` (UID 1000) | Pas d'exécution en root ; impose un port > 1024 |
+| `--port ${PORT:-8000}` | L'hébergeur impose son port ; 8000 en local |
+
+**Taille de l'image : 1,26 Go**, après deux corrections mesurées. `ragas` a été déplacé dans le groupe `dev` : réservé à l'évaluation, il n'est jamais importé par l'API mais tirait `pyarrow`, `scipy`, `sknetwork` et `zstandard`, soit plus de 350 Mo. Et `chown -R` sur tout `/app` dupliquait l'environnement virtuel dans une couche de 893 Mo ; il est restreint à `data/`, le seul dossier écrit.
+
+**Validation de bout en bout** dans le conteneur : `/health` renvoie `ok`, `/metadata` les 3 868 événements et 6 273 vecteurs, `/ask` une réponse générée avec ses sources, et `/ask` sans jeton un 401.
+
+### 6.6 Intégration continue et déploiement
+
+Le workflow [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) enchaîne quatre jobs à chaque push :
+
+| Job | Contenu |
+|---|---|
+| `qualite` | `ruff check` |
+| `tests` | `pytest` avec seuil de couverture à 80 %, rapport HTML publié en artefact |
+| `image` | `docker build`, qui valide le Dockerfile sur une machine vierge |
+| `deploiement` | Sur `main` uniquement, après les trois autres |
+
+Les tests tournent **sans clé Mistral ni données brutes** : ceux qui en dépendent s'ignorent d'eux-mêmes (`pytest.mark.skipif`), le runner n'ayant que l'index versionné. Mesuré sur un clone à blanc : 18 tests passent, 2 sont ignorés, couverture 83 %.
+
+Le déploiement vise un service **Render** de type Docker. `Auto-Deploy` y est **désactivé** : sans cela, Render redéploierait dès le push, sans attendre la CI. C'est le job `deploiement` qui appelle le crochet de déploiement, avec le SHA en paramètre pour déployer le commit vérifié et non la tête de branche.
+
+La vérification finale interroge `/health` jusqu'à y lire la révision attendue, **puis exige `status: ok`**. Un simple code 200 ne suffirait pas : la route répond aussi quand l'index n'a pas pu être chargé, et une mise en ligne cassée serait validée à tort.
+
+### 6.7 Limite mesurée : `/rebuild` et la mémoire
+
+Sur l'instance gratuite Render (512 Mo), `/rebuild` provoque un `Ran out of memory` et le redémarrage de l'instance. Mesure du pipeline, hors vectorisation :
+
+| Étape | Mémoire Python | Pic |
+|---|---|---|
+| Index chargé (état nominal) | 25 Mo | 27 Mo |
+| + JSON brut désérialisé (17,6 Mo sur disque) | 51 Mo | **175 Mo** |
+| + DataFrame nettoyé | 56 Mo | 175 Mo |
+| + 6 273 chunks | 77 Mo | 175 Mo |
+| Après libération de l'ancien index | 61 Mo | 175 Mo |
+
+Le pic vient de la désérialisation du JSON brut, dix fois plus coûteuse en objets Python qu'en texte, et il précède la vectorisation, où `FAISS.from_documents` accumule encore tous les embeddings. Libérer l'ancien index avant de reconstruire n'économiserait que 16 Mo côté Python et environ 25 Mo côté Faiss — insuffisant, et au prix de la garantie « l'index en service n'est remplacé qu'en cas de succès ». Le compromis n'a pas été retenu.
+
+**Conséquence assumée** : `/rebuild` reste utilisable en local, où la mémoire n'est pas contrainte, mais pas sur l'instance gratuite en ligne. Aucune donnée n'est perdue — l'instance redémarre sur l'index embarqué dans l'image, qui est versionné — et la mise à jour en production passe alors par une reconstruction locale, un commit et un redéploiement par la CI. Pistes d'amélioration au §8.
+
 ---
 
 ## 7. Évaluation du système
@@ -404,7 +458,11 @@ La lecture des scores bas, question par question, a guidé deux corrections, mes
 
 ## 8. Recommandations et perspectives
 
-*À compléter (étape 6-B).*
+*À compléter (étape 6-B). Pistes déjà identifiées :*
+
+- **Questions temporelles** : extraction structurée des dates par un premier appel au LLM (*self-query*), pour que « ce week-end » filtre l'index au lieu de dépendre du seul prompt (§5.4, §7.5).
+- **Titres génériques** : recherche hybride (vecteurs et mots-clés) ou top-k plus large, pour éviter que cinq événements nommés « Concert » masquent un concert de jazz (§5.4).
+- **Mémoire de `/rebuild`** : vectoriser par lots avec `add_documents` plutôt que d'accumuler tous les embeddings, et lire le JSON brut en flux. À défaut, une instance de 2 Go (§6.7).
 
 ---
 
@@ -433,6 +491,9 @@ P7/
 ├── docs/
 │   └── rapport_technique.md  # Ce rapport
 ├── data/                     # Données générées (raw/, processed/, index/), seul l'index chunk_1000 est versionné
+├── .github/workflows/ci.yml  # Lint, tests, build de l'image, déploiement Render
+├── Dockerfile                # Image de l'API, index embarqué
+├── .dockerignore             # Contexte de build réduit au nécessaire
 ├── pyproject.toml / uv.lock  # Dépendances (gestionnaire uv)
 └── README.md                 # Installation et commandes
 ```

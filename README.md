@@ -113,6 +113,25 @@ curl -X POST http://127.0.0.1:8000/rebuild -H "X-Token: $AUTH_TOKEN"
 
 Rejoue toute la chaîne (collecte, nettoyage, vectorisation) et recharge l'index sans redémarrer l'API. Compter quelques minutes et une consommation de quota Mistral.
 
+> Cette route demande environ 200 Mo de mémoire au pic : elle fonctionne en local et dans le conteneur, mais dépasse la limite d'une petite instance en ligne (voir §6.7 du rapport).
+
+## Docker
+
+L'image embarque l'index `chunk_1000`, donc le conteneur répond dès le démarrage, sans reconstruction.
+
+```bash
+docker build -t puls-events .
+docker run --rm -p 8000:8000 --env-file .env puls-events
+```
+
+La clé Mistral et le jeton sont fournis **au lancement** via `--env-file`, jamais inscrits dans l'image. L'API est alors disponible sur http://127.0.0.1:8000/docs.
+
+## Intégration continue
+
+`.github/workflows/ci.yml` vérifie chaque push : `ruff`, `pytest` avec un seuil de couverture à 80 %, et construction de l'image Docker. Un quatrième job déploie sur Render, uniquement depuis `main` et uniquement si les trois vérifications sont vertes.
+
+Les tests ne demandent ni clé API ni données brutes : ceux qui en dépendent s'ignorent automatiquement.
+
 ## Évaluation
 
 Le jeu de test annoté (20 questions, date de référence fixée) est dans `eval/test_set.json`.
