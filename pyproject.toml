@@ -22,6 +22,8 @@ dependencies = [
 
 [tool.uv]
 package = false
+# ui : dépendances de l'interface de chat, installées aussi en local
+default-groups = ["dev", "ui"]
 
 [dependency-groups]
 dev = [
@@ -33,6 +35,11 @@ dev = [
     "pytest-cov>=7.1.0",
     "ragas>=0.4.3",
     "ruff>=0.16.8",
+]
+ui = [
+    "gradio>=6.28.0",
+    "python-dotenv>=1.2.3",
+    "requests>=2.34.2",
 ]
 
 [tool.pytest.ini_options]
