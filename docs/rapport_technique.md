@@ -27,7 +27,87 @@ Démontrer aux équipes produit et marketing :
 
 ## 2. Architecture du système
 
-*À compléter (étapes 3 à 6).*
+Le système sépare deux temps : une **préparation hors ligne**, qui transforme les données Open Agenda en index vectoriel, et un **service en ligne**, qui répond aux questions à partir de cet index. L'index est versionné dans le dépôt : le conteneur démarre donc sans avoir à le reconstruire, et la démonstration ne dépend ni du quota Mistral ni de la disponibilité d'Open Agenda.
+
+```mermaid
+flowchart LR
+    OA[("Open Agenda<br/>OpenDataSoft")]
+    MI["API Mistral<br/>mistral-embed · ministral-14b"]
+    USER(["Utilisateur"])
+
+    subgraph prep["Préparation hors ligne — uv run python -m rag.x"]
+        C["collect"] --> P["preprocess"] --> D["documents"] --> I["index"]
+    end
+
+    IDX[("data/index/chunk_1000<br/>6 273 vecteurs, versionné")]
+
+    subgraph docker["Conteneur Docker"]
+        API["api/main.py<br/>FastAPI"] --> CH["chain.py<br/>classe RAG"]
+    end
+
+    OA --> C
+    I -.->|vectorisation| MI
+    I --> IDX
+    IDX -->|chargé au démarrage| CH
+    CH -.->|recherche et génération| MI
+    USER -->|POST /ask| API
+```
+
+```
+P7/
+├── rag/                      # Logique métier, réutilisée par les scripts, l'API et les tests
+│   ├── collect.py            # Collecte des événements Open Agenda -> data/raw/
+│   ├── preprocess.py         # Nettoyage des événements -> data/processed/
+│   ├── documents.py          # Construction des Documents LangChain et découpage en chunks
+│   ├── index.py              # Vectorisation Mistral et index Faiss -> data/index/
+│   ├── chain.py              # Chaîne RAG : recherche, prompt et génération (classe RAG)
+│   └── evaluate.py           # Évaluation : exécution du jeu de test, hit@5, scores Ragas
+├── api/
+│   └── main.py               # API FastAPI : /health, /metadata, /ask, /rebuild
+├── scripts/
+│   ├── check_env.py          # Vérification des imports et de la clé API Mistral
+│   ├── benchmark_faiss.py    # Comparaison des algorithmes d'index Faiss (Flat, HNSW, IVF, PQ)
+│   └── eda_openagenda.ipynb  # Analyse exploratoire justifiant la collecte et le nettoyage
+├── eval/
+│   ├── test_set.json         # Jeu de test annoté (20 questions)
+│   ├── results/              # Réponses, sources, contextes et scores par index
+│   └── iterations.md         # Suivi des itérations d'amélioration
+├── tests/                    # Tests unitaires (pytest)
+├── docs/
+│   └── rapport_technique.md  # Ce rapport
+├── data/                     # Données générées (raw/, processed/, index/), seul l'index chunk_1000 est versionné
+├── .github/workflows/ci.yml  # Lint, tests, build de l'image, déploiement Render
+├── Dockerfile                # Image de l'API, index embarqué
+├── .dockerignore             # Contexte de build réduit au nécessaire
+├── pyproject.toml / uv.lock  # Dépendances (gestionnaire uv)
+└── README.md                 # Installation et commandes
+```
+
+**Technologies** : `requests` et `pandas` pour la collecte et le nettoyage, LangChain pour les documents et la chaîne, `mistral-embed` pour les embeddings, Faiss (index plat) pour la recherche, `ministral-14b` pour la génération, FastAPI et Uvicorn pour l'API, Docker pour l'exécution, GitHub Actions et Render pour la vérification et le déploiement.
+
+**Déroulement d'une question.** Le diagramme de séquence ci-dessous détaille les échanges. Deux appels à Mistral sont nécessaires : un premier pour vectoriser la question, un second pour générer la réponse à partir des événements retrouvés.
+
+```mermaid
+sequenceDiagram
+    participant U as Utilisateur
+    participant API as api/main.py
+    participant R as RAG - chain.py
+    participant F as Index Faiss
+    participant M as API Mistral
+
+    U->>API: POST /ask {question}
+    API->>API: jeton X-Token, validation Pydantic
+    API->>R: ask(question)
+    R->>M: vectorisation de la question
+    M-->>R: vecteur de dimension 1024
+    R->>F: 200 candidats les plus proches
+    F-->>R: documents et métadonnées
+    R->>R: filtre des événements terminés,<br/>1 chunk par événement, top 5
+    R->>M: prompt : consignes + date + 5 événements
+    M-->>R: réponse en langage naturel
+    R-->>API: réponse + sources
+    API-->>U: 200, JSON exploitable
+```
 
 ## 3. Préparation et vectorisation des données
 
@@ -134,7 +214,7 @@ Toutefois, ce n'est pas parce que le contexte tient dans la fenêtre que sa tail
 
 Faiss propose plusieurs familles d'algorithmes (Flat, IVF, HNSW, PQ), chacune faisant un compromis entre vitesse, mémoire et exactitude.
 
-Un benchmark a été réalisé pour évaluer les performances des différentes approches sur 6 216 vecteurs. Ce benchmark comporte **500 questions simulées** (bruit ajouté aux vecteurs existants de la base) qui ne nécessitent pas d'appel API. Le **rappel@5** est la part des 5 vrais plus proches voisins retrouvés :
+Un benchmark a été réalisé pour évaluer les performances des différentes approches sur 6 216 vecteurs (l'index avant la correction des conditions, §7.3). Ce benchmark comporte **500 questions simulées** (bruit ajouté aux vecteurs existants de la base) qui ne nécessitent pas d'appel API. Le **rappel@5** est la part des 5 vrais plus proches voisins retrouvés :
 
 | Index | Construction | Recherche / question | Rappel@5 | Taille |
 |---|---|---|---|---|
@@ -187,7 +267,7 @@ Le prompt (`ChatPromptTemplate`) sépare les consignes (message système) de la 
 - refus des questions sans rapport avec les événements culturels
 
 **Gestion de la temporalité :** La recherche vectorielle ignore les dates : sans traitement, les 5 événements retrouvés étaient souvent terminés et le LLM inventait la date du jour. Trois mesures :
-1. **Filtre sur les métadonnées** : seuls les événements dont la date de fin est postérieure à la date de référence sont conservés. Faiss filtrant après la recherche, 200 candidats sont récupérés (`fetch_k`) pour en garder 5.
+1. **Filtre sur les métadonnées** : seuls les événements dont la date de fin est postérieure à la date de référence sont conservés. Le wrapper LangChain appliquant le filtre **après** la recherche vectorielle, 200 candidats sont récupérés (`fetch_k`) pour en garder 5.
 2. **Date du jour et week-end injectés dans le prompt**.
 3. **Date de référence réglable** (`ask(question, today=...)`) pour rejouer l'évaluation à date fixe.
 
@@ -295,13 +375,13 @@ Les tests tournent **sans clé Mistral ni données brutes** : ceux qui en dépen
 
 #### Déploiement Render
 
-Le déploiement vise un service **Render** de type Docker. C'est le job `deploiement` qui appelle le crochet de déploiement, avec le SHA en paramètre pour déployer le commit vérifié. La vérification finale interroge `/health` jusqu'à y lire la révision attendue, puis exige `status: ok`.
+Le service est en ligne sur <https://puls-events-api.onrender.com> (documentation interactive sur `/docs`). Il s'agit d'un service **Render** de type Docker. C'est le job `deploiement` qui appelle le crochet de déploiement, avec le SHA en paramètre pour déployer le commit vérifié. La vérification finale interroge `/health` jusqu'à y lire la révision attendue, puis exige `status: ok`.
 
-Sur l'instance gratuite Render (512 Mo), `/rebuild` provoque un `Ran out of memory` et le redémarrage de l'instance. Le conteneur fait un pic autour de 700 Mo lors de la reconstruction (JSON + dataframe + chuncks).
+Sur l'instance gratuite Render (512 Mo), `/rebuild` provoque un `Ran out of memory` et le redémarrage de l'instance. Le conteneur fait un pic autour de 700 Mo lors de la reconstruction (JSON + dataframe + chunks).
 
 **Conséquence pour le POC** : `/rebuild` reste utilisable en local, où la mémoire n'est pas contrainte, mais pas sur l'instance de démonstration en ligne. Aucune donnée n'est perdue, l'instance redémarre sur l'index contenu dans l'image, qui est versionné et la mise à jour en production passe alors par une reconstruction locale, un commit et un redéploiement par la CI/CD.
 
-## 7. Évaluation du système
+## 7. Évaluation et tests
 
 L'évaluation est implémentée dans [`rag/evaluate.py`](../rag/evaluate.py). Le suivi détaillé des itérations est dans [`eval/iterations.md`](../eval/iterations.md).
 
@@ -389,45 +469,56 @@ La lecture des scores bas, question par question, a guidé deux corrections, mes
 
 **Tests** ([`tests/test_evaluate.py`](../tests/test_evaluate.py)) : calcul du hit (au moins un événement attendu retrouvé, question non notée sans événement attendu) et taux par catégorie.
 
+### 7.6 Tests automatisés
+
+Chaque étape du projet a livré ses tests plutôt que de les reporter à la fin. Ils s'exécutent **sans clé API ni accès réseau** : l'index Faiss est remplacé par des embeddings déterministes et le LLM par un faux modèle à réponse fixe, ce qui rend la suite rejouable à l'identique en intégration continue. Les quelques tests qui exigent les données brutes ou la clé Mistral se désactivent seuls (`pytest.mark.skipif`).
+
+```bash
+uv run pytest --cov --cov-report=term-missing
+```
+
+**Couverture** mesurée sur un dépôt fraîchement cloné, dans les conditions du runner : **19 tests passent, 2 sont ignorés, 83 % de couverture** — au-dessus du seuil de 80 % que la CI impose. En local, où les données brutes et la clé sont disponibles, 21 tests passent pour 84 %.
+
+| Module | Couverture | Lignes non couvertes |
+|---|---|---|
+| `rag/documents.py` | 100 % | — |
+| `rag/chain.py` | 98 % | Formatage d'une date en français |
+| `api/main.py` | 95 % | Chargement au démarrage (`lifespan`) |
+| `rag/preprocess.py` | 95 % | Sauvegarde sur disque |
+| `rag/collect.py` | 74 % | Appels réseau à Open Agenda |
+| `rag/index.py` | 67 % | Vectorisation, qui consomme du quota Mistral |
+| `rag/evaluate.py` | 49 % | Exécution Ragas, qui demande la clé et plusieurs minutes |
+
+Les trois modules les moins couverts le sont pour la même raison : leurs lignes manquantes **appellent un service externe**. Les tester en automatique supposerait soit de simuler les réponses d'Open Agenda et de Mistral, soit de payer un appel réel à chaque exécution de la CI. Ces chemins ont été vérifiés manuellement, et de bout en bout par la reconstruction complète lancée dans le conteneur (§6.6). Le rapport de couverture HTML est publié en artefact à chaque exécution de la CI.
+
 ## 8. Recommandations et perspectives
 
-*À compléter (étape 6-B). Pistes déjà identifiées :*
+**Ce qui fonctionne.** Le POC atteint 93 % de hit@5 et une *faithfulness* de 0,86 sur le jeu annoté. Surtout, il refuse honnêtement : l'assistant ne recommande jamais d'événement absent de l'index, dit quand il ne sait pas, et recadre les tentatives d'injection du jeu de test. La chaîne complète est reproductible avec un index reconstructible en deux minutes, API conteneurisée et vérification automatique à chaque push.
 
-- **Questions temporelles** : extraction structurée des dates par un premier appel au LLM (*self-query*), pour que « ce week-end » filtre l'index au lieu de dépendre du seul prompt.
-- **Titres génériques** : recherche hybride (vecteurs et mots-clés) ou top-k plus large, pour éviter que cinq événements nommés « Concert » masquent un concert de jazz.
+**Limites :**
+- Les questions temporelles (« ce week-end ») échouent : la recherche vectorielle ignore les dates
+- Les descriptions Open Agenda, rédigées par des tiers, sont insérées dans le message système : une injection indirecte reste possible
+- Un passage à l'échelle demandera à revoir la méthode d'indexation
+
+**Améliorations prioritaires.**
+
+1. **Filtrer sur les dates avant la recherche vectorielle.** Deux parties indissociables : faire extraire la période par le LLM (*self-query*) plutôt que de compter sur le prompt, et appliquer ce filtre **en amont** de la recherche. Faiss le permet via un sélecteur d'identifiants, que le wrapper LangChain n'expose pas. Un filtre appliqué à posteriori oblige à sur-chercher d'autant plus qu'il est sélectif. C'est la correction qui débloquerait la catégorie la plus faible.
+2. **Recherche hybride** (vecteurs et mots-clés) : éviter que cinq événements intitulés « Concert » masquent un concert de jazz.
+3. **Historique de conversation** pour permettre un échange plus complet avec l'utilisateur.
+4. **Rafraîchissement planifié** plutôt qu'un endpoint appelé à la main : une tâche quotidienne qui reconstruit l'index chaque nuit et le met en service. L'évaluation devient alors un test de non-régression.
+
+**Passage en production.**
+
+- **Base vectorielle dédiée.** Faiss, imposé par le cahier des charges, est une bibliothèque de recherche de similarité et non une base de données : elle ignore les métadonnées, que LangChain gère à côté. Cet aspect est intéressant pour le POC car il permet d'embarquer l'index dans un conteneur autonome, sans service externe à déployer, mais le besoin de filtrage ne s'arrêtera pas aux dates : tarif, quartier, public et période sont autant de critères qu'un moteur comme Qdrant ou pgvector traiterait nativement, là où il faut ici les implémenter à la main.
+- **Instance dimensionnée** : volume de données suffisant et disponibilité.
+- **Jetons par client et limitation de débit**, au lieu d'un jeton unique partagé, pour tracer et plafonner la consommation.
+- **Observabilité** : latence, taux de refus et coût par question — les trois indicateurs qui signalent une dérive avant que les utilisateurs ne la remarquent.
 
 ## 9. Organisation du dépôt GitHub
 
-```
-P7/
-├── rag/                      # Logique métier, réutilisée par les scripts, l'API et les tests
-│   ├── collect.py            # Collecte des événements Open Agenda -> data/raw/
-│   ├── preprocess.py         # Nettoyage des événements -> data/processed/
-│   ├── documents.py          # Construction des Documents LangChain et découpage en chunks
-│   ├── index.py              # Vectorisation Mistral et index Faiss -> data/index/
-│   ├── chain.py              # Chaîne RAG : recherche, prompt et génération (classe RAG)
-│   └── evaluate.py           # Évaluation : exécution du jeu de test, hit@5, scores Ragas
-├── api/
-│   └── main.py               # API FastAPI : /health, /metadata, /ask, /rebuild
-├── scripts/
-│   ├── check_env.py          # Vérification des imports et de la clé API Mistral
-│   ├── benchmark_faiss.py    # Comparaison des algorithmes d'index Faiss (Flat, HNSW, IVF, PQ)
-│   └── eda_openagenda.ipynb  # Analyse exploratoire justifiant la collecte et le nettoyage
-├── eval/
-│   ├── test_set.json         # Jeu de test annoté (20 questions)
-│   ├── results/              # Réponses, sources, contextes et scores par index
-│   └── iterations.md         # Suivi des itérations d'amélioration
-├── tests/                    # Tests unitaires (pytest)
-├── docs/
-│   └── rapport_technique.md  # Ce rapport
-├── data/                     # Données générées (raw/, processed/, index/), seul l'index chunk_1000 est versionné
-├── .github/workflows/ci.yml  # Lint, tests, build de l'image, déploiement Render
-├── Dockerfile                # Image de l'API, index embarqué
-├── .dockerignore             # Contexte de build réduit au nécessaire
-├── pyproject.toml / uv.lock  # Dépendances (gestionnaire uv)
-└── README.md                 # Installation et commandes
-```
+L'arborescence et le rôle de chaque dossier figurent au point 2. Le dépôt suit un workflow léger, sans *pull request* :
 
-## 10. Annexes
-
-*À compléter.*
+- **une branche par étape** (`etape-5-api`, `etape-6a-docker`…), fusionnée dans `main` une fois les tests validés
+- **commits en convention courte** (`feat:`, `fix:`, `test:`, `docs:`, `ci:`) avec un corps expliquant l'objectif puis la méthode
+- **`main` protégée** contre la suppression et le *force-push* : chaque push y déclenche la CI, et le déploiement n'a lieu qu'après ses trois vérifications
+- **l'index `chunk_1000` est versionné** par exception dans `.gitignore` : c'est ce qui permet de démarrer l'API sans clé ni reconstruction.
