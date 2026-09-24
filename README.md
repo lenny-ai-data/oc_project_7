@@ -23,6 +23,7 @@ P7/
 │   └── main.py               # API FastAPI : /health, /metadata, /ask, /rebuild
 ├── scripts/
 │   ├── check_env.py          # Vérification des imports et de la clé API Mistral
+│   ├── ask_api.py            # Client en ligne de commande : question à l'API, réponse et sources mises en forme
 │   ├── benchmark_faiss.py    # Comparaison des algorithmes d'index Faiss (Flat, HNSW, IVF, PQ)
 │   └── eda_openagenda.ipynb  # Analyse exploratoire justifiant la collecte et le nettoyage
 ├── eval/
@@ -94,7 +95,7 @@ Deux index sont construits, sans découpage (`no_chunk`, ~1 min) et avec découp
 
 ```bash
 # Recherche vectorielle + réponse générée par Mistral
-uv run python -m rag.chain "Je cherche un concert de jazz, tu as des idées ?"
+uv run python -m rag.chain "Je cherche une pièce de théâtre, tu as des idées ?"
 ```
 
 ## Mise en service de l'API
@@ -174,6 +175,17 @@ En cas de push sur `main`, un quatrième job déploie sur Render (uniquement si 
 
 - Si l'instance est en sommeil elle redémarre en ~1 minutes
 - La route `/rebuild` dépasse la limite de mémoire allouée à l'instance, elle n'est pas fonctionnelle sur ce endpoint.
+
+## Poser une question à l'API via CLI
+
+Prérequis : jeton `AUTH_TOKEN` dans l'environnement (le même que celui de l'API).
+
+```bash
+# Question envoyée à /ask sur Render : affiche la réponse, puis les sources avec leur lien
+uv run python scripts/ask_api.py "Je cherche une pièce de théâtre, tu as des idées ?"
+```
+
+Le délai d'attente (120 s) couvre le réveil de l'instance. En cas d'erreur, le code HTTP et le motif renvoyé par l'API sont affichés (jeton invalide, index absent, Mistral indisponible).
 
 
 ## Évaluation
