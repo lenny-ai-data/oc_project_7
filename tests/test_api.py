@@ -25,6 +25,7 @@ def make_doc(uid: str, title: str) -> Document:
     return Document(
         page_content=f"Titre : {title}",
         metadata={"uid": uid, "title": title, "date_range": "Mardi 1 décembre 2026, 20h00",
+                  "first_date": "2026-12-01T20:00:00+00:00",
                   "last_date": "2026-12-01T20:00:00+00:00", "location_name": "Le Bikini",
                   "url": "https://exemple.fr", "status": "Prévu", "agenda": "Test"},
     )

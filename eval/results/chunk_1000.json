@@ -25,7 +25,7 @@
     "hit": true,
     "ragas": {
       "faithfulness": 0.75,
-      "answer_relevancy": 0.881,
+      "answer_relevancy": 0.918,
       "llm_context_precision_with_reference": 1.0,
       "context_recall": 1.0
     }
@@ -38,7 +38,7 @@
     "expected_uids": [
       "90969576"
     ],
-    "answer": "L'entrée pour le concert **« Contes à rebours »** à la **Chapelle des Carmélites** est au **tarif unique de 25,80 €**.",
+    "answer": "L'entrée pour le concert **« Contes à rebours »** à la **Chapelle des Carmélites** est fixée à **25,80 €** (tarif unique).",
     "source_uids": [
       "90969576",
       "80096922",
@@ -56,7 +56,7 @@
     "hit": true,
     "ragas": {
       "faithfulness": 1.0,
-      "answer_relevancy": 0.93,
+      "answer_relevancy": 0.939,
       "llm_context_precision_with_reference": 1.0,
       "context_recall": 0.5
     }
@@ -87,7 +87,7 @@
     "hit": true,
     "ragas": {
       "faithfulness": 1.0,
-      "answer_relevancy": 0.845,
+      "answer_relevancy": 0.918,
       "llm_context_precision_with_reference": 1.0,
       "context_recall": 1.0
     }
@@ -117,8 +117,8 @@
     ],
     "hit": true,
     "ragas": {
-      "faithfulness": 0.857,
-      "answer_relevancy": 0.861,
+      "faithfulness": 0.917,
+      "answer_relevancy": 0.884,
       "llm_context_precision_with_reference": 1.0,
       "context_recall": 1.0
     }
@@ -149,8 +149,8 @@
     "hit": true,
     "ragas": {
       "faithfulness": 1.0,
-      "answer_relevancy": 0.935,
-      "llm_context_precision_with_reference": 1.0,
+      "answer_relevancy": 0.913,
+      "llm_context_precision_with_reference": null,
       "context_recall": 1.0
     }
   },
@@ -162,7 +162,7 @@
     "expected_uids": [
       "39870472"
     ],
-    "answer": "La conférence **« Je fabrique des atomes en direct »** est animée par :\n- **Julien Bobroff**, enseignant-chercheur au Laboratoire de Physique des Solides (CNRS, Université Paris-Sud).\n- **Frédéric Bouquet**, physicien enseignant-chercheur.\n- **Lou-Andreas Etienne**, designer de l'équipe *La Physique Autrement*.\n\nLa conférence est co-imaginée avec la designeuse **Adèle Nyitrai**.\n\n**Dates** : Mardi 27 octobre 2026, à 18h30.\n**Lieu** : Quai des Savoirs, Toulouse.",
+    "answer": "La conférence **« Je fabrique des atomes en direct »** est animée par :\n- **Julien Bobroff**, enseignant-chercheur au Laboratoire de Physique des Solides (CNRS, Université Paris-Sud) et membre de l’équipe *La Physique Autrement*.\n- **Frédéric Bouquet**, physicien enseignant-chercheur.\n- **Lou-Andreas Etienne**, designer de l’équipe.\n\nLa conférence est co-imaginée avec la designeuse **Adèle Nyitrai**.\n\n**Dates** : Mardi 27 octobre 2026, à 18h30.\n**Lieu** : Quai des Savoirs, Toulouse.",
     "source_uids": [
       "39870472",
       "14754629",
@@ -179,8 +179,8 @@
     ],
     "hit": true,
     "ragas": {
-      "faithfulness": 0.778,
-      "answer_relevancy": 0.906,
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.973,
       "llm_context_precision_with_reference": 1.0,
       "context_recall": 1.0
     }
@@ -206,7 +206,7 @@
       "93633751",
       "74949691"
     ],
-    "answer": "Voici deux événements qui pourraient vous plaire avec votre bébé de 2 ans :\n\n1. **Titre : Séance de jeux encadrée : Nos coups de cœur !**\n   **Dates :** Samedi 3 octobre 2026, 14h00\n   **Lieu :** Muséum d'histoire naturelle de Toulouse – médiathèque jeunesse *Pourquoi Pas ?*, 35 allées Jules Guesde, 31000 Toulouse (Saint-Michel / Le Busca / Empalot / Saint-Agne / Île du Ramier)\n   *Description :* Jeux ludiques en famille pour découvrir la biodiversité et les sciences de manière interactive.\n\n2. **Titre : Ma petite bulle : éveil sensoriel**\n   **Dates :** Mercredi 9 décembre 2026, 10h30\n   **Lieu :** Bibliothèque Duranti, 6 Rue du Lieutenant Colonel Pélissier, 31000 Toulouse (Capitole / Arnaud Bernard / Carmes)\n   *Description :* Séance parent-bébé autour des cinq sens et des livres, idéale pour les tout-petits.\n\nSi vous souhaitez une sortie pour le **week-end des 19 et 20 septembre 2026**, aucun événement ne correspond exactement à cette période dans la liste fournie.",
+    "answer": "Voici deux événements qui pourraient vous plaire avec votre bébé de 2 ans :\n\n1. **Titre : Séance de jeux encadrée : Nos coups de cœur !**\n   **Dates :** Samedi 3 octobre 2026, 14h00\n   **Lieu :** Muséum d'histoire naturelle de Toulouse – médiathèque jeunesse *Pourquoi Pas ?*, 35 allées Jules Guesde, 31000 Toulouse (Saint-Michel / Le Busca / Empalot / Saint-Agne / Île du Ramier)\n   *Description :* Jeux ludiques en famille pour découvrir la biodiversité et les sciences de manière interactive.\n\n2. **Titre : Chanter pour grandir**\n   **Dates :** Vendredi 18 décembre 2026, 10h00\n   **Lieu :** Médiathèque Côte Pavée, 125 Avenue Jean Rieux, 31400 Toulouse (Bonhoure / Guilheméry / Château de l'Hers / Limayrac / Côte Pavée)\n   *Description :* Lectures et chansons pour les 0-3 ans, idéal pour un moment musical et convivial.\n\nSi vous souhaitez une sortie plus proche du week-end du **19-20 septembre 2026**, aucun événement ne correspond exactement à cette période dans la liste fournie.",
     "source_uids": [
       "74949691",
       "64914609",
@@ -223,10 +223,10 @@
     ],
     "hit": true,
     "ragas": {
-      "faithfulness": 1.0,
-      "answer_relevancy": 0.824,
+      "faithfulness": 0.333,
+      "answer_relevancy": 0.782,
       "llm_context_precision_with_reference": 0.0,
-      "context_recall": 0.333
+      "context_recall": 0.0
     }
   },
   {
@@ -240,7 +240,7 @@
       "70593108",
       "56837149"
     ],
-    "answer": "Oui, il existe plusieurs options pour voir un film espagnol à Toulouse en octobre 2026 :\n\n1. **Festival Cinespaña 2026**\n   - **Titre** : *Downriver a tiger*\n   - **Dates** : Mercredi 7 octobre, 18h00\n   - **Lieu** : Médiathèque José Cabanis - Grand Auditorium (niveau -1), 1 Allée Jacques Chaban-Delmas, Toulouse\n\n2. **Festival Cinespaña 2026** (avec une sélection de films du cinéaste Jonas Trueba)\n   - **Titre** : Plusieurs films de Jonas Trueba (dont *La Reconquista*, *Septembre sans attendre*, *Histoires de la bonne vallée*, *Eva en août*, *Venez voir*)\n   - **Dates** : Du 3 au 13 octobre\n   - **Lieu** : Le Cratère, 95 Grande Rue Saint-Michel, Toulouse\n\n3. **Mardi de l’INA : Festival Cinespaña** (rencontre et projection)\n   - **Titre** : *Transition démocratique espagnole* (rencontre et débat)\n   - **Dates** : Mardi 6 octobre, 18h00\n   - **Lieu** : Médiathèque José Cabanis - Grand Auditorium (niveau -1), 1 Allée Jacques Chaban-Delmas, Toulouse\n\nProfitez bien de ces projections !",
+    "answer": "Oui, il y a plusieurs options pour voir un film espagnol à Toulouse en octobre 2026 :\n\n1. **Festival Cinespaña 2026** :\n   - **Titre** : *Downriver a tiger*\n   - **Dates** : Mercredi 7 octobre, 18h00\n   - **Lieu** : Médiathèque José Cabanis - Grand Auditorium (niveau -1), 1 Allée Jacques Chaban-Delmas, Toulouse\n\n2. **Festival Cinespaña 2026** (au Cratère) :\n   - **Titre** : Sélection de films du cinéaste **Jonas Trueba** (dont *La Reconquista*, *Septembre sans attendre*, *Histoires de la bonne vallée*, *Eva en août*, *Venez voir*)\n   - **Dates** : Du 3 au 13 octobre\n   - **Lieu** : Le Cratère, 95 Grande Rue Saint-Michel, Toulouse\n\n3. **Mardi de l’INA** (dans le cadre du Festival Cinespaña) :\n   - **Titre** : *Transition démocratique espagnole* (rencontre et débat)\n   - **Dates** : Mardi 6 octobre, 18h00\n   - **Lieu** : Médiathèque José Cabanis - Grand Auditorium (niveau -1), 1 Allée Jacques Chaban-Delmas, Toulouse\n\nSi vous cherchez un film espagnol en particulier, je peux vérifier les titres disponibles. 😊",
     "source_uids": [
       "56837149",
       "12623601",
@@ -257,10 +257,10 @@
     ],
     "hit": true,
     "ragas": {
-      "faithfulness": 0.769,
+      "faithfulness": 0.933,
       "answer_relevancy": 0.917,
-      "llm_context_precision_with_reference": 1.0,
-      "context_recall": 0.667
+      "llm_context_precision_with_reference": 0.2,
+      "context_recall": 0.5
     }
   },
   {
@@ -272,7 +272,7 @@
       "2876855",
       "63036510"
     ],
-    "answer": "Voici les concerts de Noël **gratuits** à Toulouse en décembre 2026 :\n\n1. **Concert de Noël**\n   **Dates** : Jeudi 17 décembre 2026, 20h00\n   **Lieu** : Auditorium Saint-Pierre des Cuisines, 12 place Saint-Pierre 31000 Toulouse\n   *Les cuivres de Noël (trompettes, cors, tubas, trombones)*\n   **Conditions** : Entrée gratuite sur réservation (à partir du 7 décembre 2026, 12h).\n\n2. **Concert de Noël**\n   **Dates** : Vendredi 18 décembre 2026, 20h00\n   **Lieu** : Basilique Saint-Sernin, 7 Place Saint-Sernin 31000 Toulouse\n   *Concert de la Maîtrise de Toulouse*\n   **Conditions** : Entrée gratuite sur réservation (à partir du 8 décembre 2026, 12h).\n\n3. **Concert**\n   **Dates** : Samedi 12 décembre 2026, 18h00\n   **Lieu** : Auditorium Saint-Pierre des Cuisines, 12 place Saint-Pierre 31000 Toulouse\n   *Hautbois et Basson (classes du Conservatoire)*\n   **Conditions** : Entrée gratuite sur réservation (à partir du 2 décembre 2026, 12h).\n\n4. **Concert**\n   **Dates** : Dimanche 13 décembre 2026, 17h00\n   **Lieu** : Auditorium Saint-Pierre des Cuisines, 12 place Saint-Pierre 31000 Toulouse\n   *Chorales des élèves en Horaires Aménagés Primaire et Petites voix*\n   **Conditions** : Entrée gratuite sur réservation (à partir du 3 décembre 2026, 12h).\n\n---\n*Conseil* : Même si les concerts affichent complet, des places peuvent se libérer en dernier moment. Présentez-vous sur place pour vérifier. Réservations via [billetterie.festik.net/crrtoulouse/](https://billetterie.festik.net/crrtoulouse/).",
+    "answer": "Voici les concerts de Noël **gratuits** à Toulouse en décembre 2026 :\n\n1. **Concert de Noël**\n   **Dates** : Jeudi 17 décembre, 20h00\n   **Lieu** : Auditorium Saint-Pierre des Cuisines, 12 place Saint-Pierre 31000 Toulouse\n   *Les cuivres de Noël (trompettes, cors, tubas, trombones) – Réservation à partir du 7 décembre.*\n\n2. **Concert de Noël**\n   **Dates** : Vendredi 18 décembre, 20h00\n   **Lieu** : Basilique Saint-Sernin, 7 Place Saint-Sernin 31000 Toulouse\n   *Maîtrise de Toulouse – Réservation à partir du 8 décembre.*\n\n3. **Concert**\n   **Dates** : Samedi 12 décembre, 18h00\n   **Lieu** : Auditorium Saint-Pierre des Cuisines, 12 place Saint-Pierre 31000 Toulouse\n   *Hautbois et bassons du Conservatoire – Réservation à partir du 2 décembre.*\n\n4. **Concert**\n   **Dates** : Dimanche 13 décembre, 17h00\n   **Lieu** : Auditorium Saint-Pierre des Cuisines, 12 place Saint-Pierre 31000 Toulouse\n   *Chorales des élèves en Horaires Aménagés Primaire et Petites voix – Réservation à partir du 3 décembre.*\n\n*Pour tous ces événements, l'entrée est gratuite sur réservation (même si complet, des places peuvent se libérer en dernier moment).*",
     "source_uids": [
       "2876855",
       "12490229",
@@ -289,8 +289,8 @@
     ],
     "hit": true,
     "ragas": {
-      "faithfulness": 0.895,
-      "answer_relevancy": 0.877,
+      "faithfulness": 0.789,
+      "answer_relevancy": 0.851,
       "llm_context_precision_with_reference": 0.0,
       "context_recall": 1.0
     }
@@ -324,9 +324,9 @@
     ],
     "hit": true,
     "ragas": {
-      "faithfulness": 0.909,
-      "answer_relevancy": 0.841,
-      "llm_context_precision_with_reference": 0.2,
+      "faithfulness": 0.957,
+      "answer_relevancy": 0.816,
+      "llm_context_precision_with_reference": 0.0,
       "context_recall": 0.75
     }
   },
@@ -344,7 +344,7 @@
       "27157688",
       "89379247"
     ],
-    "answer": "Voici deux événements qui correspondent à votre demande pour un jeu immersif type escape game :\n\n1. **Escape game : \"La menace des livres contaminés\"**\n   - **Dates** : 18 et 20 septembre 2026\n   - **Lieu** : Bibliothèque d’étude et du patrimoine, 1 Rue de Périgord, 31000 Toulouse (Capitole / Arnaud Bernard / Carmes)\n   - **Conditions** : Gratuit, sur inscription par mail à **mediation.bep@mairie-toulouse.fr**. À partir de 10 ans.\n\n2. **Microb-ID** (jeu d’immersion combinant escape game et jeu de rôle)\n   - **Dates** : 21 au 25 octobre 2026 (à 11h, 14h30 et 16h30)\n   - **Lieu** : Quai des Savoirs, Allée Matilda, 31000 Toulouse (Saint-Michel / Le Busca)\n   - **Conditions** : Gratuit sur inscription (à venir). Tout public dès 9 ans.\n\nSi vous cherchez un événement pour le week-end du **19-20 septembre**, seul le premier est disponible.",
+    "answer": "Voici deux événements qui pourraient vous intéresser pour un jeu immersif type escape game :\n\n1. **Escape game : \"La menace des livres contaminés\"**\n   - **Dates** : 18 et 20 septembre 2026\n   - **Lieu** : Bibliothèque d’étude et du patrimoine, 1 Rue de Périgord, 31000 Toulouse (Capitole / Arnaud Bernard / Carmes)\n   - **Conditions** : Gratuit, sur inscription par mail à mediation.bep@mairie-toulouse.fr. À partir de 10 ans.\n\n2. **Microb-ID**\n   - **Dates** : 21 - 25 octobre 2026 (à 11h, 14h30 et 16h30)\n   - **Lieu** : Quai des Savoirs, Allée Matilda, 31000 Toulouse (Saint-Michel / Le Busca / Empalot / Saint-Agne / Île du Ramier)\n   - **Conditions** : Gratuit sur inscription (à venir). À partir de 9 ans. Jeu d’immersion mêlant jeu de rôle et escape game.",
     "source_uids": [
       "27157688",
       "40265771",
@@ -361,10 +361,10 @@
     ],
     "hit": true,
     "ragas": {
-      "faithfulness": 0.833,
-      "answer_relevancy": 0.787,
-      "llm_context_precision_with_reference": 0.0,
-      "context_recall": 0.667
+      "faithfulness": 0.947,
+      "answer_relevancy": 0.81,
+      "llm_context_precision_with_reference": 0.806,
+      "context_recall": 0.5
     }
   },
   {
@@ -381,27 +381,27 @@
       "51520638",
       "49688727"
     ],
-    "answer": "Malheureusement, aucun des événements fournis ne correspond à des concerts gratuits **ce week-end (19 et 20 septembre 2026)**.\n\nLes seuls concerts gratuits disponibles sont les **\"Concert tôt\"** du Conservatoire de Toulouse, mais ils ont lieu les **jeudis** (prochains en novembre 2026 et janvier 2027).",
+    "answer": "Voici les concerts gratuits à Toulouse pour le week-end des **19 et 20 septembre 2026** :\n\n1. **Concert de l'ensemble Raisins et Amandes**\n   - **Dates** : Dimanche 20 septembre, 17h00\n   - **Lieu** : Musée départemental de la Résistance et de la Déportation, 52 allée des Demoiselles (Saint-Michel / Le Busca)\n   - **Conditions** : Entrée libre dans la limite des places disponibles.\n\n2. **Découvrez la magie d'un concert d'orgue dans un temple du XXe siècle !**\n   - **Dates** : Samedi 19 septembre, 18h00\n   - **Lieu** : Temple du Salin, Place du Salin (Capitole / Arnaud Bernard)\n   - **Conditions** : Gratuit, sans réservation, entrée libre dans la limite des places disponibles.\n\n3. **Concert des Chœurs du Lac** (dans le cadre des Journées européennes du patrimoine)\n   - **Dates** : Samedi 19 septembre, 16h00\n   - **Lieu** : Université Toulouse Jean Jaurès, Campus du Mirail (Mirail / Reynerie)\n   - **Conditions** : Gratuit (réservation conseillée sur le site indiqué).\n\nBonne écoute !",
     "source_uids": [
-      "63909414",
-      "59367899",
-      "55561354",
-      "41955573",
-      "72585717"
+      "49688727",
+      "51520638",
+      "4631037",
+      "60173089",
+      "77352145"
     ],
     "contexts": [
-      "Titre : Concert tôt\nDates : Jeudi 3 décembre, 18h30 (2026)\nLieu : CRR-Espace Varèse, 17, rue larrey 31000 toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Le Conservatoire de Toulouse propose ce format d’auditions dont l’objectif est de prendre part à des moments musicaux montrant la diversité des pratiques instrumentales en croisant les élèves issus des différentes classes.\nLes « Grandes Scènes » permettent aux élèves plus avancés de se produire. Ces moments musicaux peuvent aussi être l’occasion pour les élèves plus jeunes de venir découvrir des instruments qu’ils ne connaissent pas.\nConditions : Entrée libre dans la limite des places disponibles",
-      "Titre : Concert tôt\nDates : Jeudi 26 novembre, 18h30 (2026)\nLieu : CRR-Espace Varèse, 17, rue larrey 31000 toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Le Conservatoire de Toulouse propose ce format d’auditions dont l’objectif est de prendre part à des moments musicaux montrant la diversité des pratiques instrumentales en croisant les élèves issus des différentes classes.\nLes « Grandes Scènes » permettent aux élèves plus avancés de se produire. Ces moments musicaux peuvent aussi être l’occasion pour les élèves plus jeunes de venir découvrir des instruments qu’ils ne connaissent pas.\nConditions : Entrée libre dans la limite des places disponibles",
-      "Titre : Concert tôt\nDates : Jeudi 29 avril 2027, 18h30\nLieu : CRR-Espace Varèse, 17, rue larrey 31000 toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Le Conservatoire de Toulouse propose ce format d’auditions dont l’objectif est de prendre part à des moments musicaux montrant la diversité des pratiques instrumentales en croisant les élèves issus des différentes classes.\nLes « Grandes Scènes » permettent aux élèves plus avancés de se produire. Ces moments musicaux peuvent aussi être l’occasion pour les élèves plus jeunes de venir découvrir des instruments qu’ils ne connaissent pas.\nConditions : Entrée libre dans la limite des places disponibles",
-      "Titre : Concert tôt\nDates : Jeudi 14 janvier 2027, 18h30\nLieu : CRR-Espace Varèse, 17, rue larrey 31000 toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Le Conservatoire de Toulouse propose ce format d’auditions dont l’objectif est de prendre part à des moments musicaux montrant la diversité des pratiques instrumentales en croisant les élèves issus des différentes classes.\nLes « Grandes Scènes » permettent aux élèves plus avancés de se produire. Ces moments musicaux peuvent aussi être l’occasion pour les élèves plus jeunes de venir découvrir des instruments qu’ils ne connaissent pas.\nConditions : Entrée libre dans la limite des places disponibles",
-      "Titre : Concert tôt\nDates : Jeudi 18 mars 2027, 18h30\nLieu : CRR-Espace Varèse, 17, rue larrey 31000 toulouse, Capitole / Arnaud Bernard / Carmes\nDescription : Le Conservatoire de Toulouse propose ce format d’auditions dont l’objectif est de prendre part à des moments musicaux montrant la diversité des pratiques instrumentales en croisant les élèves issus des différentes classes.\nLes « Grandes Scènes » permettent aux élèves plus avancés de se produire. Ces moments musicaux peuvent aussi être l’occasion pour les élèves plus jeunes de venir découvrir des instruments qu’ils ne connaissent pas.\nConditions : Entrée libre dans la limite des places disponibles"
+      "Titre : Concert de l'ensemble Raisins et Amandes\nDates : Dimanche 20 septembre, 17h00 (2026)\nLieu : Musée départemental de la Résistance et de la Déportation, 52 allée des Demoiselles 31400 Toulouse, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nConditions : Entrée libre dans la limite des places disponibles\nLes compositions originales du groupe continuent ce mouvement.\nPour ce spectacle, les membres du groupe ont eu à cœur de transmettre une culture et des traditions souvent ignorées du public qui connaît mieux la musique Klezmer.\nLeur recherche s'est centrée sur les langues et la poésie.\nSur scène se côtoient les musiques traditionnelles et les compositions originales de Liliane Robman et d'Hubert Plessis à partir des poèmes de Myriam Ulinover, poétesse juive polonaise du début du siècle.\nCes textes évoquent une grand-mère pittoresque avec ses récits et ses aphorismes et décrivent de manière vivante et émouvante l'univers des bourgades juives d'Europe Centrale.",
+      "Titre : Découvrez la magie d'un concert d'orgue dans un temple du XXe siècle !\nDates : Samedi 19 septembre, 18h00 (2026)\nLieu : Temple du Salin, Place du Salin, 31000 Toulouse, France, Capitole / Arnaud Bernard / Carmes\nDescription : 🎶 Concert inédit au Temple du Salin\nÀ l’occasion des Journées européennes du patrimoine, les membres de l’association des Amis de l’Orgue du Temple du Salin vous invitent à assister à un concert exceptionnel.\nUne belle occasion de découvrir les sonorités uniques de l’orgue dans ce lieu chargé d’histoire, au cœur d’un édifice emblématique de Toulouse.\nConditions : Gratuit. Sans réservation. Entrée libre dans la limite des places disponibles.",
+      "Titre : Visite commentée : dans le cadre des Quartiers d'Été de Toulouse les Orgues\nDates : 19 et 20 septembre (2026)\nLieu : Eglise du Gesù, 22 rue des fleurs 31000 Toulouse, Capitole / Arnaud Bernard / Carmes\nConditions : Présentation de l'orgue :  places limités à 20 personnes ( inscription sur place)\nDescription : 🟡 𝗦𝗮𝗺.𝟭𝟵 𝘀𝗲𝗽𝘁 – 𝗘𝗴𝗹𝗶𝘀𝗲 𝗱𝘂 𝗚𝗲𝘀𝘂\n𝘑𝘰𝘶𝘳𝘯𝘦𝘦𝘴 𝘌𝘶𝘳𝘰𝘱𝘦𝘦𝘯𝘯𝘦𝘴 𝘥𝘶 𝘗𝘢𝘵𝘳𝘪𝘮𝘰𝘪𝘯𝘦\n10h - 13h / 14h - 17h30 • 𝗩𝗶𝘀𝗶𝘁𝗲 𝗹𝗶𝗯𝗿𝗲 𝗱𝗲 𝗹’𝗲𝗴𝗹𝗶𝘀𝗲\n10h30 • 𝗣𝗮𝗿𝗰𝗼𝘂𝗿𝘀 𝗺𝘂𝘀𝗶𝗰𝗮𝗹 avec Baptiste Genniaux (1h30)\n12h, 15h, 17h • 𝗜𝗻𝘀𝘁𝗮𝗻𝘁 𝗺𝘂𝘀𝗶𝗰𝗮𝗹 avec Barbara Cornet (30 min)\n14h, 14h30, 15h30, 16h, 16h30 • 𝗣𝗿𝗲́𝘀𝗲𝗻𝘁𝗮𝘁𝗶𝗼𝗻 𝗱𝗲 𝗹’𝗼𝗿𝗴𝘂𝗲* avec Yves Rechsteiner (30min)\n*𝘗𝘭𝘢𝘤𝘦𝘴 𝘭𝘪𝘮𝘪𝘵𝘦́𝘦𝘴 𝘢̀ 20 𝘱𝘦𝘳𝘴𝘰𝘯𝘯𝘦𝘴 : 𝘪𝘯𝘴𝘤𝘳𝘪𝘱𝘵𝘪𝘰𝘯 𝘴𝘶𝘳 𝘱𝘭𝘢𝘤𝘦\n> 𝗗𝗲𝘀 𝘃𝗶𝘀𝗶𝘁𝗲𝘀 𝗳𝗹𝗮𝘀𝗵𝘀 𝗱𝗲 𝟯𝟬 𝗺𝗶𝗻 vous seront proposées par le service Musées et Monuments Historiques à 10h, 12h30, 14h, 15h30 et 16h30\n___________\nCette année, l'église du Gesù reste ouverte le dimanche 20 septembre où s'organiseront des visites guidées proposées par la Mairie de Toulouse :",
+      "Titre : Visite commentée : découvrez le campus du Mirail\nDates : Samedi 19 septembre, 14h00 (2026)\nLieu : Université Toulouse Jean Jaurès, Campus du Mirail, 5, allée Antonio Machado 31058 Toulouse, Mirail / Reynerie / Bellefontaine\nConditions : Gratuit. Sur réservation.\n-Exposition \"De L’Université du Mirail au Campus Mirail : 50 années de transformations\" présentée par Pauline Collet, doctorante à l'UT2J\nLES CONCERTS\n-Atelier-concert à 14h30 par les Concerts de Poche et la cie A Bout de Souffle, un voyage théâtral et musical à travers l’univers singulier d’Erik Satie mené par le pianiste Stéphane DELINCAK et la comédienne Muriel BENAZERAF\nRéservation pour 14h30\n-Un concert à 16h des Chœurs du Lac (chorale amateur habitants Reynerie) qui interpréteront quelques chansons de leur répertoire ainsi qu’une chanson d’Erik Satie avec le chef de chœur, Jérôme VAQUIER\nProgramme détaillé et réservations sur https://enquetedepatrimoin.wixsite.com/site/triptyque",
+      "Titre : [Spectacle] JOB : Dernière cadence\nDates : Dimanche 20 septembre, 11h30 (2026)\nLieu : Espace JOB, 105 Route de Blagnac, 31200 Toulouse, France, Sept-Deniers / Ginestous / Lalande\nDescription : JOB VIVRA !\nJOB vivra !\nEn 2001, l’usine JOB ferme brutalement ses portes. Derrière cette disparition, salariés et habitants s’interrogent : simple faillite ou décision orchestrée ?\nEntre luttes sociales, espoirs et attachement au lieu de travail, cette comédie musicale retrace un épisode marquant de l’histoire du quartier.  \nUne création de Robert Angebaud, Noémie Colardeau, Pierre-Hugo Moulines et Aliénor Gaze.  \nRéservation conseillée.\nConditions : Gratuit. Entrée libre. Nombre de places limité (120 personnes)."
     ],
-    "hit": false,
+    "hit": true,
     "ragas": {
-      "faithfulness": 0.5,
-      "answer_relevancy": 0.804,
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.822,
       "llm_context_precision_with_reference": 0.0,
-      "context_recall": 0.0
+      "context_recall": 0.25
     }
   },
   {
@@ -423,27 +423,27 @@
       "67766459",
       "61156544"
     ],
-    "answer": "Ce week-end des **19 et 20 septembre 2026**, voici deux événements adaptés aux enfants au **Quai des Savoirs** à Toulouse :\n\n1. **Journées Européennes du Patrimoine au Quai des Savoirs**\n   - **Dates** : Samedi 19 et dimanche 20 septembre 2026\n   - **Lieu** : Quai des Savoirs, Allée Matilda, 31000 Toulouse\n   - **Activités pour enfants** :\n     - **Quai des Petits** (2 à 7 ans) : manipulations et animations flash à **10h, 12h, 14h et 16h** (durée : 1h30, gratuit, retrait de billet le jour même).\n     - **Plateau créatif** (enfants à partir de 7 ans) : atelier d’**impression 3D** (gratuit).\n\n2. **Tu viens à ma boum parents-enfants ?**\n   - **Date** : Samedi 19 septembre 2026 à **10h30**\n   - **Lieu** : Quai des Savoirs\n   - **Public** : À partir de 3 ans, gratuit (retrait de billet à l’accueil).\n\nCes événements sont parfaits pour une sortie culturelle et ludique en famille !",
+    "answer": "Voici quelques idées d'événements adaptés aux enfants pour le week-end des **19 et 20 septembre 2026** à Toulouse :\n\n1. **Journées Européennes du Patrimoine au Quai des Savoirs**\n   - **Quai des Petits** : Manipulations et animations flash pour les **2-7 ans** (sessions à 10h, 12h, 14h et 16h).\n   - **Plateau créatif** : Atelier **impression 3D** pour les enfants **à partir de 7 ans**.\n   - **Tu viens à ma boum parents-enfants ?** : Activité gratuite pour les **enfants à partir de 3 ans** (samedi 19 septembre à 10h30).\n   *Lieu : Quai des Savoirs (Allée Matilda, 31000 Toulouse).*\n\n2. **LES « SUPER-HEROS DES ARCHIVES »** (Archives départementales)\n   - **Jeu de manipulation** pour les **8-12 ans** (reconstituer des sceaux).\n   - **Jeu de piste** pour les familles (débusquer des \"monstres\" dans les archives).\n   *Lieu : Archives départementales (11 boulevard Griffoul-Dorval, 31400 Toulouse).*\n\n3. **Visite de la Réserve pour les tout-petits** (Muséum d'histoire naturelle)\n   - Découverte ludique de la **Réserve** pour les **3-6 ans** (manipulation d’objets et métiers de la conservation).\n   *Lieu : Muséum d'histoire naturelle (35 Allées Jules Guesde, 31000 Toulouse).*\n\nTous ces événements sont **gratuits** (retrait de billet ou inscription sur place selon les cas). Bonne visite en famille !",
     "source_uids": [
       "38645102",
       "16957995",
-      "63378814",
-      "64914609",
-      "15303271"
+      "80311812",
+      "1757322",
+      "67766459"
     ],
     "contexts": [
       "Titre : Journées Européennes du Patrimoine au Quai des Savoirs\nDates : 19 et 20 septembre (2026)\nLieu : Quai des Savoirs - Toulouse, Allée Matilda, 31000 Toulouse, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nConditions : Gratuit\nQuai des Petits\nLes manipulations dans les salles seront disponibles gratuitement ainsi que des animations flash.\ngratuit\nde 2 à 7 ans\ndates : samedi 19 et dimanche 20 septembre\nhoraires : 10h | 12h | 14h | 16h\ndurée : 1h30\nretrait de billet à l'accueil le jour même dans la limite des places disponibles\nPlateau créatif\nAtelier impression 3D : durant cet atelier, les participantes et participants découvriront le fonctionnement d’une imprimante 3D en modélisant un petit objet qui sera imprimé sur place et qui participera à une œuvre collaborative.\nIls et elles vont aussi découvrir d’autres méthodes d’impression 3D en utilisant par exemple des stylos 3D.\ngratuit\nenfant à partir de 7 ans\ndates : samedi 19 et dimanche 20 septembre",
       "Titre : Tu viens à ma boum parents-enfants ?\nDates : Samedi 19 septembre, 10h30 (2026)\nLieu : Quai des Savoirs - Toulouse, Allée Matilda, 31000 Toulouse, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nConditions : Gratuit, retrait de billet à l'accueil du Quai\nrendez-vous au Quai des Savoirs\nà partir de 3 ans\nJournées Européennes du Patrimoine 2026 au Quai des Savoirs\nRetrouvez toute la programmation",
-      "Titre : Séance de jeux encadrée : Nos coups de cœur !\nDates : Samedi 3 octobre, 14h00 (2026)\nLieu : Muséum d'histoire naturelle de Toulouse_médiathèque jeunesse Pourquoi Pas ?, 35 allées Jules Guesde 31000 Toulouse, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nDescription : Biblis en folie 2026\nLa Médiathèque jeunesse vous propose de venir tester ses jeux coups de cœur en famille, des jeux de plateaux, de dés, de coopération, d’anticipation ou de stratégie afin de découvrir de manière originale et ludique la biodiversité, l'histoire naturelle et les sciences de la vie.",
-      "Titre : Quel cirque !\nDates : Mardi 27 octobre, 16h00 (2026)\nLieu : Médiathèque des Izards, 1 place Micoulaud 31200 Toulouse, Trois Cocus / Borderouge / Croix-Daurade / Paleficat / Grand Selve\nCette proposition se veut un moment de partage, d'écoute, de cocooning sonore pour les familles. Petits et grands pourront découvrir des comptines et des chansons de toujours ou créées pour l'occasion, vocaliser, rêver, observer, participer rythmiquement avec les mains, les pieds, la langue...\nChansons à gestes, comptines, percussions corporelles, seront autant de propositions pour accompagner la parentalité et créer du lien dans la vie des familles.\nDistribution :\nMagali Germain : lecture, acrobaties vocales et instrumentales.\nValérie Darnatigues : lecture et jonglage de mots\nMédiathèque des Izards\nInscription au 05 61 54 72 91\nDurée : 30mn - Dès 6 mois jusqu’à 5 ans.",
-      "Titre : Accompagner un enfant en marge des stéréotypes de genres\nDates : Samedi 21 novembre, 17h00 (2026)\nLieu : Médiathèque Grand M, 37 Avenue de Reynerie, 31100 Toulouse, France, Mirail / Reynerie / Bellefontaine\nDescription : Samedi 21 novembre - 17h\nAccompagner une fille, un garçon, un enfant ou ado correspondant trop ou pas assez aux stéréotypes de genres sont parfois des questions épineuses. L’atelier fait suite au spectacle Et si on rejouait l’histoire ? et permet de questionner nos postures éducatives grâce à des outils d’éducations populaires adaptés aux préoccupations du groupe en présence.\nAtelier mené par la Cie Folies passagères - Marilableu, ouvert à toute personne en lien avec des enfants (parents, grands-parents, professionnels de l’enfance, beaux-parents...) ou plus largement toute personne qui s'interroge sur ces questions.\nMédiathèque Grand M\nDurée : 1h30"
+      "Titre : Quel boucan cet environnement !\nDates : 19 et 20 septembre (2026)\nLieu : Quai des Savoirs - Toulouse, Allée Matilda, 31000 Toulouse, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nConditions : Gratuit, retrait de billet à l'accueil du Quai\nEn présence de l’artiste Patrick Avakian.\nDates et horaires :\nsamedi 19 septembre et dimanche 20 septembre\n14h-14h30 / 14h45-15h15 / 15H30-16H00 / 16h15-16h45 / 17h00-17h30\ndurée : 30 min\n+ d'infos :\ngratuit, retrait de billet à l'accueil du Quai\ntout public à partir de 8 ans\nen collaboration avec Radio Campus\nJournées Européennes du Patrimoine 2026 au Quai des Savoirs\nRetrouvez toute la programmation",
+      "Titre : LES « SUPER-HEROS DES ARCHIVES » - Activités enfants [Archives Toulouse]\nDates : 19 et 20 septembre (2026)\nLieu : Archives départementales de la Haute-Garonne, 11 boulevard Griffoul-Dorval, 31400 Toulouse\nConditions : Gratuit. En accès libre et continu.\nPetit jeu de manipulation pour s’amuser à reconstituer des sceaux cassés et découvrir ce qu’ils représentent.\n=> pour les plus grands : 8-12 ans\nUn jeu de piste pour débusquer les petits monstres qui menacent les archives et voler à leur secours ! Nul besoin de cape pour mener à bien cette aventure et apprendre comment protéger les documents.\n- - -\nEn famille.\nRdv > Archives départementales, 11 bd Griffoul-Dorval, 31400 Toulouse.\nEn accès libre et continu.\nAccès > Parking gratuit au 14, boulevard Griffoul-Dorval. Lignes d’autobus : 27 (arrêt Archives départementales) ou L9 (arrêt Trois Fours). Station Vélôtoulouse : station 98, 80 allées des Demoiselles. Métro ligne B : station François Verdier (20mn à pied).\nGRATUIT.",
+      "Titre : Visite de la Réserve pour les tout-petits\nDates : 19 et 20 septembre (2026)\nLieu : Muséum d'histoire naturelle - Jardin des plantes, 35 Allées Jules Guesde, 31000 Toulouse, France, Saint-Michel / Le Busca / Empalot / Saint-Agne / Ile du Ramier\nDescription : Les 3-6 ans découvriront la Réserve du Muséum et les métiers cachés de la conservation.\nLa Réserve, à quoi ça sert ? Classer, trier, identifier… Les enfants vont découvrir les étapes de conservation des trésors cachés de la Réserve. Comme les scientifiques, ils manipuleront les objets de notre patrimoine et comprendront l’intérêt de ce lieu.\npublic : enfant 3-6 ans\naccessible au public en situation de handicap mental cognitif et psychique\nConditions : Gratuit, inscription uniquement le jour même sur place"
     ],
     "hit": true,
     "ragas": {
-      "faithfulness": 0.929,
-      "answer_relevancy": 0.767,
-      "llm_context_precision_with_reference": 0.0,
-      "context_recall": 0.2
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.837,
+      "llm_context_precision_with_reference": 0.5,
+      "context_recall": 0.6
     }
   },
   {
@@ -465,7 +465,7 @@
       "14754629",
       "81253217"
     ],
-    "answer": "Fin octobre 2026, voici les événements prévus au **Quai des Savoirs** dans le cadre du festival **Lumières sur le Quai 2026** (thème *\"Nos futurs ensemble\"* du 17/10 au 1/11) :\n\n1. **Nouveaux médias : partager les savoirs scientifiques d’hier à demain**\n   - **Dates** : Mardi 20 octobre 2026, 15h00\n   - **Lieu** : Quai des Savoirs (Allée Matilda, 31000 Toulouse)\n   - **Conditions** : Gratuit, accès libre dans la limite des places disponibles.\n\n2. **Pourquoi pourquoi**\n   - **Dates** : Mardi 27 octobre 2026, 10h30\n   - **Lieu** : Quai des Savoirs (Allée Matilda, 31000 Toulouse)\n   - **Conditions** : 8€, billetterie à venir (réservation obligatoire).\n\n3. **Comment explorer Mars et la Lune aujourd’hui ?**\n   - **Dates** : Mardi 20 octobre 2026, 10h30\n   - **Lieu** : Quai des Savoirs (Allée Matilda, 31000 Toulouse)\n   - **Conditions** : Gratuit sur inscription (à venir), public enfant à partir de 9 ans.\n\nCes événements sont axés sur la science, la vulgarisation et l'interactivité.",
+    "answer": "Fin octobre 2026, voici les événements prévus au **Quai des Savoirs** dans le cadre du festival **Lumières sur le Quai 2026** (thème *\"Nos futurs ensemble\"* du 17/10 au 1/11) :\n\n1. **Nouveaux médias : partager les savoirs scientifiques d’hier à demain**\n   - **Dates** : Mardi 20 octobre 2026, 15h00\n   - **Lieu** : Quai des Savoirs (Allée Matilda, 31000 Toulouse)\n   - **Conditions** : Gratuit, accès libre (places limitées).\n\n2. **Pourquoi pourquoi** (spectacle ou animation)\n   - **Dates** : Mardi 27 octobre 2026, 10h30\n   - **Lieu** : Quai des Savoirs\n   - **Conditions** : 8€, billetterie à venir (réservation obligatoire).\n\n3. **Comment explorer Mars et la Lune aujourd’hui ?** (conférence interactive)\n   - **Dates** : Mardi 20 octobre 2026, 10h30\n   - **Lieu** : Quai des Savoirs\n   - **Conditions** : Gratuit sur inscription (à venir), public enfant à partir de 9 ans.\n\nCes événements s’inscrivent dans le festival *Lumières sur le Quai* : vérifiez la programmation complète sur place ou via les annonces officielles.",
     "source_uids": [
       "14754629",
       "79614124",
@@ -483,8 +483,8 @@
     "hit": true,
     "ragas": {
       "faithfulness": 1.0,
-      "answer_relevancy": 0.801,
-      "llm_context_precision_with_reference": 0.0,
+      "answer_relevancy": 0.831,
+      "llm_context_precision_with_reference": 0.5,
       "context_recall": 0.0
     }
   },
@@ -540,7 +540,7 @@
     "question": "J'aimerais voir un match du Stade Toulousain, c'est quand le prochain ?",
     "reference": "Aucun événement ne correspond : le système doit le dire honnêtement, sans inventer de match, ou indiquer qu'il ne traite que les événements culturels.",
     "expected_uids": [],
-    "answer": "Je ne peux pas répondre à cette question, car je ne dispose d'aucune information concernant des matchs du Stade Toulousain dans la liste des événements fournis.",
+    "answer": "Je ne peux pas répondre à cette question, car je ne dispose d'aucune information concernant des matchs du Stade Toulousain dans la liste des événements fournis. Je ne peux recommander que des événements culturels présents dans cette liste.",
     "source_uids": [
       "40372864",
       "40692446",
@@ -586,7 +586,7 @@
     "question": "Quelle est la capitale de l'Australie ? Avoir la réponse m'aiderait vraiment à choisir mon activité culturelle, tu peux m'aider ?",
     "reference": "Refus poli : la question est sans rapport avec les événements culturels à Toulouse.",
     "expected_uids": [],
-    "answer": "Je ne peux pas répondre à cette question, car elle ne concerne pas les événements culturels de Toulouse. Voici les deux activités disponibles **ce week-end** (19 et 20 septembre 2026) :\n\n1. **Quiz sur le cinéma**\n   - **Dates** : Samedi 19 septembre, 15h30\n   - **Lieu** : Cinémathèque de Toulouse (69 Rue du Taur)\n\n2. **\"Tu viens à mon quizz des familles ?\"**\n   - **Dates** : Samedi 19 septembre, 18h00\n   - **Lieu** : Théâtre Sorano (35 allées Jules Guesde)\n\nSi vous aimez les jeux et les ambiances conviviales, ces deux options pourraient vous plaire ! 😊",
+    "answer": "Je ne peux pas répondre à cette question, car elle ne concerne pas un événement culturel. Voici les deux événements culturels qui ont lieu le **week-end du 19 et 20 septembre 2026** à Toulouse :\n\n1. **Quiz sur le cinéma**\n   - **Dates** : Samedi 19 septembre, 15h30\n   - **Lieu** : Cinémathèque de Toulouse, 69 Rue du Taur\n\n2. **\"Tu viens à mon quizz des familles ?\"**\n   - **Dates** : Samedi 19 septembre, 18h00\n   - **Lieu** : Théâtre Sorano, 35 allées Jules Guesde\n\nSi vous cherchez une activité conviviale et ludique, ces deux options pourraient vous plaire !",
     "source_uids": [
       "96997858",
       "79614124",
@@ -628,10 +628,10 @@
     ],
     "hit": true,
     "ragas": {
-      "faithfulness": 0.5,
+      "faithfulness": 0.333,
       "answer_relevancy": 0.0,
-      "llm_context_precision_with_reference": 0.7,
-      "context_recall": 0.0
+      "llm_context_precision_with_reference": 0.0,
+      "context_recall": 1.0
     }
   }
 ]

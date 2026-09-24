@@ -135,6 +135,8 @@ curl.exe -X POST http://127.0.0.1:8000/ask `
 
 Le champ optionnel `today` (`"2026-09-15"`) fixe la date de référence, pour rejouer une démonstration à date constante.
 
+> Chaque appel à `/ask` déclenche trois requêtes Mistral : repérage de la période visée par la question, vectorisation, puis génération de la réponse.
+
 ### Reconstruire l'index
 
 ```bash
@@ -180,10 +182,10 @@ Le jeu de test annoté (20 questions, date de référence fixée) est dans `eval
 
 ```bash
 # Pose les questions au RAG, calcule le hit@5 et sauvegarde les réponses > eval/results/<index>.json
-uv run python -m rag.evaluate run no_chunk
+uv run python -m rag.evaluate run chunk_1000
 
-# Evalue les scores Ragas (juge ministral-8b) à partir des réponses sauvegardées
-uv run python -m rag.evaluate ragas no_chunk
+# Evalue les scores Ragas (juge ministral-14b) à partir des réponses sauvegardées
+uv run python -m rag.evaluate ragas chunk_1000
 ```
 
 Ragas 0.4.3 ne s'importe pas tel quel avec `langchain-community` 0.4 ([issue #2745](https://github.com/vibrantlabsai/ragas/issues/2745)). `rag/evaluate.py` applique un contournement avant l'import.
@@ -193,6 +195,6 @@ Ragas 0.4.3 ne s'importe pas tel quel avec `langchain-community` 0.4 ([issue #27
 ```bash
 # Lancement des tests
 uv run pytest
-# Avec génération du rapport
-uv run pytest --cov=rag --cov-report=html
+# Avec génération du rapport de couverture (rag/ et api/)
+uv run pytest --cov --cov-report=html
 ```

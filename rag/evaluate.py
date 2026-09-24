@@ -30,7 +30,12 @@ TEST_SET_PATH = EVAL_DIR / "test_set.json"
 RESULTS_DIR = EVAL_DIR / "results"
 
 # LLM juge pour Ragas (188 req/min en free plan)
-JUDGE_MODEL = "ministral-8b-latest"
+# Juge : le 14b rend un verdict déterministe là où le 8b variait jusqu'à 1,00
+# sur des contextes identiques, ce qui rendait le context recall inexploitable
+JUDGE_MODEL = "ministral-14b-latest"
+
+# Appels Ragas en parallèle, calé sur la limite de débit du juge (30 req/min pour le 14b)
+MAX_WORKERS = 2
 
 # Métriques Ragas, dans l'ordre des colonnes produites
 RAGAS_METRICS = ["faithfulness", "answer_relevancy", "llm_context_precision_with_reference", "context_recall"]
@@ -119,7 +124,7 @@ def ragas_scores(results: list[dict]) -> list[dict]:
         metrics=[Faithfulness(), ResponseRelevancy(strictness=1), LLMContextPrecisionWithReference(), LLMContextRecall()],
         llm=LangchainLLMWrapper(ChatMistralAI(model=JUDGE_MODEL, temperature=0)),
         embeddings=LangchainEmbeddingsWrapper(embeddings),
-        run_config=RunConfig(max_workers=4, timeout=180),
+        run_config=RunConfig(max_workers=MAX_WORKERS, timeout=180),
     )
 
     # Scores ajoutés à chaque résultat (NaN remplacé par None pour un JSON valide)
