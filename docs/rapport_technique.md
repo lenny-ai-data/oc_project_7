@@ -274,7 +274,7 @@ Le prompt (`ChatPromptTemplate`) sépare les consignes (message système) de la 
 **Gestion de la temporalité :** la recherche vectorielle ignore les dates. Sans traitement, les 5 événements retrouvés étaient souvent terminés, et une question « ce week-end » ramenait des concerts de novembre à avril. Quatre mesures :
 
 1. **Filtre imposé** : seuls les événements dont la date de fin est postérieure à la date de référence sont retenus.
-2. **Période déduite de la question** (*self-query*) : un premier appel au LLM en sortie structurée détermine si la question situe les événements dans le temps, et le cas échéant en extrait les bornes. Le week-end est calculé en Python et fourni dans la consigne, le modèle se trompant sur l'arithmétique des jours de semaine. Si la période ne laisse aucun événement, elle est ignorée plutôt que de ne rien répondre.
+2. **Période déduite de la question** (*self-query*) : un premier appel au LLM en sortie structurée détermine si la question situe les événements dans le temps, et le cas échéant en extrait les bornes. Le week-end est calculé en Python et fourni dans la consigne. La consigne exige les deux bornes (un mois couvre tous ses jours) et une période à venir quand l'année n'est pas précisée. Si la période ne laisse aucun événement, elle est ignorée plutôt que de ne rien répondre.
 3. **Filtre appliqué avant la recherche** par un sélecteur d'identifiants Faiss, le wrapper LangChain ne permettant pas un tel filtrage en amont. Cela permet de ne remonter que des éléments pertinents.
 4. **Date du jour, week-end et date de référence réglable** (`ask(question, today=...)`) dans le prompt, pour rejouer l'évaluation à date fixe.
 
@@ -293,7 +293,7 @@ Scénarios tirés du jeu de test annoté. Réponses de la configuration finale (
 | Information absente | « Combien coûte l'exposition Les vies de la photographie au Château d'Eau ? » | ✅ « Je ne dispose pas d'informations sur les tarifs », avec un renvoi vers le Château d'Eau |
 
 Limites observées :
-- **Questions temporelles** : résolues par le filtrage des dates avant la recherche (§5.3), au prix d'un appel LLM supplémentaire par question. L'extraction reste faillible : une période inventée sur une question qui n'en mentionne pas restreindrait la recherche à tort, d'où les contre-exemples dans la consigne et le repli si le filtre ne laisse rien.
+- **Questions temporelles** : résolues par le filtrage des dates avant la recherche (§5.3), au prix d'un appel LLM supplémentaire par question. 
 - **Titres génériques** : lors des premiers essais, pour « un concert de jazz », 5 événements intitulés « Concert » (conservatoire) passaient devant des événements jazz à venir. Pistes : top-k plus grand, recherche hybride (vecteurs + mots-clés).
 - **Sources** : elles listent les 5 événements fournis au LLM, y compris ceux qu'il n'a pas cités.
 - **Risques d'injection** : les tentatives directes du jeu de test sont refusées, mais les descriptions Open Agenda, rédigées par des tiers, sont insérées dans le message système (risque d'injection indirecte).
@@ -431,7 +431,7 @@ Métriques utilisées (juge `ministral-14b`) :
 
 ### 7.3 Itérations d'amélioration
 
-La lecture des scores bas, question par question, a guidé trois corrections, mesurées séparément. Le juge ayant changé à l'itération 4, **les scores Ragas ne se comparent qu'à juge identique**, d'où la ligne « renotés ». Le détail figure dans [`eval/iterations.md`](../eval/iterations.md).
+La lecture des scores bas, question par question, puis la préparation de la démonstration ont guidé quatre corrections, mesurées séparément. Le juge ayant changé à l'itération 4, **les scores Ragas ne se comparent qu'à juge identique**, d'où la ligne « renotés ». Le détail figure dans [`eval/iterations.md`](../eval/iterations.md).
 
 | # | Changement | Index | Juge | Hit@5 | Faithfulness | Answer relevancy | Context precision | Context recall |
 |---|---|---|---|---|---|---|---|---|
@@ -441,18 +441,20 @@ La lecture des scores bas, question par question, a guidé trois corrections, me
 | 2 | Prompt : week-end seulement si demandé | `chunk_1000` | 8b | 93 % | 0,78 | 0,74 | 0,45 | 0,57 |
 | 3 | Découpage : conditions dans chaque chunk | `chunk_1000` | 8b | 93 % | 0,86 | 0,80 | 0,53 | 0,65 |
 | 3 | *(mêmes résultats, renotés en **14b**)* | `chunk_1000` | **14b** | 93 % | 0,865 | 0,812 | 0,479 | 0,643 |
-| 4 | Filtrage des dates avant la recherche | `chunk_1000` | **14b** | **100 %** | 0,86 | 0,81 | 0,50 | **0,670** |
+| 4 | Filtrage des dates avant la recherche | `chunk_1000` | **14b** | **100 %** | 0,86 | 0,81 | 0,50 | 0,670 |
+| 5 | Bornes de la période extraite | `chunk_1000` | **14b** | **100 %** | **0,96** | 0,76 | 0,47 | **0,71** |
 
 1. **Référence** : les *answer relevancy* à 0 ont révélé un effet de bord du prompt. La phrase « ce week-end désigne le 19-20 septembre » poussait le modèle à restreindre au week-end des questions qui n'en parlaient pas pour la moitié des questions posées.
 2. **Correction du prompt** (« Si la question parle du week-end, il s'agit du … ; sinon, ne limite pas ta réponse à une période ») : l'*answer relevancy* gagne de 0,13 à 0,18.
 3. **Correction du découpage** : une réponse « je ne sais pas » sur la réservation d'une conférence a révélé que la ligne `Conditions`, en fin de texte, était absente des chunks découpés. Elle est désormais répétée dans l'en-tête de chaque chunk et les 4 moyennes progressent.
 4. **Filtrage des dates avant la recherche** (§5.3) : le hit@5 passe de 93 à 100 % et la catégorie temporelle de 67 à 100 %, sans dégradation détectable de la génération : à juge égal, *faithfulness* (0,865 → 0,86) et *answer relevancy* (0,812 → 0,81) restent dans leur propre bruit. Le *context recall* monte de 0,643 à 0,670, et **uniquement sur les deux questions dont la récupération a changé**, ce qui est la signature attendue d'une amélioration de la seule recherche.
+5. **Bornes de la période extraite** : « des concerts de Noël en décembre ? » ne trouvait rien, alors que l'index en compte trois. Le LLM omettait la fin du mois (`fin = None`) et la période se réduisait au 1er décembre. Il plaçait aussi un mois sans année dans le passé (février 2026). Deux lignes de consigne corrigent ces deux défauts.
 
 ### 7.4 Résultats et choix de l'index
 
 **Index retenu : `chunk_1000`**. Il est meilleur ou équivalent à `no_chunk` sur tous les indicateurs. Il est versionné dans `data/index/chunk_1000/` (32 Mo) pour démarrer l'API sans reconstruction.
 
-Après l'itération 4, le hit@5 atteint **100 % dans les quatre catégories** — factuelle, recommandation, temporelle et information absente — contre 67 % en temporel auparavant.
+Après l'itération 4, le hit@5 atteint **100 % dans les quatre catégories** : factuelle, recommandation, temporelle et information absente, contre 67 % en temporel auparavant.
 
 **Questions sans score Ragas** :
 
@@ -509,7 +511,7 @@ Les trois modules les moins couverts le sont pour la même raison : leurs lignes
 
 ## 8. Recommandations et perspectives
 
-**Ce qui fonctionne.** Le POC atteint 100 % de hit@5 et une *faithfulness* de 0,86 sur le jeu annoté. Surtout, il refuse honnêtement : l'assistant ne recommande jamais d'événement absent de l'index, dit quand il ne sait pas, et recadre les tentatives d'injection du jeu de test. La chaîne complète est reproductible avec un index reconstructible en deux minutes, API conteneurisée et vérification automatique à chaque push.
+**Ce qui fonctionne.** Le POC atteint 100 % de hit@5 et une *faithfulness* de 0,86 à 0,96 selon les exécutions sur le jeu annoté. Surtout, il refuse honnêtement : l'assistant ne recommande jamais d'événement absent de l'index, dit quand il ne sait pas, et recadre les tentatives d'injection du jeu de test. La chaîne complète est reproductible avec un index reconstructible en deux minutes, API conteneurisée et vérification automatique à chaque push.
 
 **Limites :**
 - L'extraction de la période par le LLM peut se tromper : une période inventée restreindrait la recherche à tort, et chaque question coûte un appel de plus
