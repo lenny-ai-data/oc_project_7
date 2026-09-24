@@ -51,7 +51,8 @@ def client(fake_rag, monkeypatch) -> TestClient:
 # --- TESTS ----------------------------------
 
 def test_diagnostic(client, monkeypatch):
-    assert client.get("/health").json() == {"status": "ok", "index": main.INDEX_NAME, "error": None}
+    # revision : renseignée par l'hébergeur, absente en local
+    assert client.get("/health").json() == {"status": "ok", "index": main.INDEX_NAME, "revision": None, "error": None}
     data = client.get("/metadata").json()
     assert data["city"] == "Toulouse"
     assert (data["events"], data["vectors"]) == (2, 2)

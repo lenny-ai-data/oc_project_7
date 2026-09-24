@@ -92,7 +92,12 @@ def ragas_scores(results: list[dict]) -> list[dict]:
     from ragas import EvaluationDataset, RunConfig, SingleTurnSample, evaluate
     from ragas.embeddings import LangchainEmbeddingsWrapper
     from ragas.llms import LangchainLLMWrapper
-    from ragas.metrics import Faithfulness, LLMContextPrecisionWithReference, LLMContextRecall, ResponseRelevancy
+    from ragas.metrics import (
+        Faithfulness,
+        LLMContextPrecisionWithReference,
+        LLMContextRecall,
+        ResponseRelevancy,
+    )
     # ---------------------------------------------------
 
     # Selection des questions avec une réponse attendue
