@@ -13,15 +13,14 @@ ENV UV_COMPILE_BYTECODE=1 \
 WORKDIR /app
 
 # Couche des dependances, seulement quand le lock change
+# --no-default-groups : ni les outils dev ni l'interface de chat
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev
+RUN uv sync --frozen --no-default-groups
 
 # Utilisateur non privilégié, créé avant les copies
 RUN useradd --create-home --uid 1000 app
 
 # Code et index retenu. data/ appartient à app car c'est le seul dossier écrit
-# (par /rebuild) ; --chown pose le propriétaire à la copie, alors qu'un chown
-# after-coup recopierait les fichiers dans une couche supplémentaire.
 COPY rag/ rag/
 COPY api/ api/
 COPY --chown=app:app data/index/chunk_1000/ data/index/chunk_1000/
