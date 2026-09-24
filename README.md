@@ -35,6 +35,7 @@ P7/
 │   └── rapport_technique.md  # Ce rapport
 ├── data/                     # Données générées (raw/, processed/, index/), seul l'index chunk_1000 est versionné
 ├── .github/workflows/ci.yml  # Lint, tests, build de l'image, déploiement Render
+├── run.py                    # Lancement local de l'API après vérification de l'environnement
 ├── Dockerfile                # Image de l'API, index embarqué
 ├── .dockerignore             # Contexte de build réduit au nécessaire
 ├── pyproject.toml / uv.lock  # Dépendances (gestionnaire uv)
@@ -103,7 +104,9 @@ uv run python -m rag.chain "Je cherche une pièce de théâtre, tu as des idées
 Prérequis : un jeton `AUTH_TOKEN` dans l'environnement, qui protège les routes consommant du quota Mistral.
 
 ```bash
-# Mise en service
+# Vérifie l'index, la clé et le jeton, puis démarre l'API
+uv run python run.py
+# Ou directement, avec rechargement automatique pendant le développement
 uv run uvicorn api.main:app --reload
 ```
 

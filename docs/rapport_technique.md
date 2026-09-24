@@ -78,6 +78,7 @@ P7/
 │   └── rapport_technique.md  # Ce rapport
 ├── data/                     # Données générées (raw/, processed/, index/), seul l'index chunk_1000 est versionné
 ├── .github/workflows/ci.yml  # Lint, tests, build de l'image, déploiement Render
+├── run.py                    # Lancement local de l'API après vérification de l'environnement
 ├── Dockerfile                # Image de l'API, index embarqué
 ├── .dockerignore             # Contexte de build réduit au nécessaire
 ├── pyproject.toml / uv.lock  # Dépendances (gestionnaire uv)
@@ -428,6 +429,8 @@ Métriques utilisées (juge `ministral-14b`) :
 - **Answer relevancy** : Le juge reformule la question à partir de la réponse
 - **Context precision** : Le juge note l'utilité de chaque contexte par rapport à la référence
 - **Context recall** : Le juge vérifie chaque phrase de la référence dans les contextes
+
+**Similarité sémantique écartée.** Comparer le vecteur de la réponse à celui de la référence mesure une proximité de *formulation*, pas une justesse de *contenu*. Sur les questions ouvertes, où des dizaines d'événements conviennent, une réponse parfaitement valable mais construite sur d'autres événements que ceux cités en exemple obtiendrait un score bas. Le hit@5 vérifie que les bons événements sont retrouvés et Ragas que la réponse s'appuie sur eux : les deux répondent à la question « la réponse a-t-elle le même sens et les mêmes informations que la référence ? » sans ce biais.
 
 ### 7.3 Itérations d'amélioration
 
