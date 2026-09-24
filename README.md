@@ -6,7 +6,9 @@ Stack : **LangChain**, base vectorielle **Faiss** et modèles **Mistral** (embed
 
 📄 Choix techniques, données et résultats : voir le [rapport technique](docs/rapport_technique.md).
 
-⏩ **Instance de démonstration en ligne** : <https://puls-events-api.onrender.com/docs> (compter ~1 min de réveil de l'instance).
+⏩ **Instances de démonstration en ligne** (compter ~1 min de réveil de chaque instance) :
+- Interface de chat : <https://puls-events-chat.onrender.com> (identifiants communiqués séparément)
+- API : <https://puls-events-api.onrender.com/docs>
 
 ## Arborescence
 
@@ -24,6 +26,7 @@ P7/
 ├── scripts/
 │   ├── check_env.py          # Vérification des imports et de la clé API Mistral
 │   ├── ask_api.py            # Client en ligne de commande : question à l'API, réponse et sources mises en forme
+│   ├── chat_ui.py            # Interface de chat Gradio, cliente de l'API, avec page de connexion
 │   ├── benchmark_faiss.py    # Comparaison des algorithmes d'index Faiss (Flat, HNSW, IVF, PQ)
 │   └── eda_openagenda.ipynb  # Analyse exploratoire justifiant la collecte et le nettoyage
 ├── eval/
@@ -38,6 +41,8 @@ P7/
 ├── run.py                    # Lancement local de l'API après vérification de l'environnement
 ├── Dockerfile                # Image de l'API, index embarqué
 ├── .dockerignore             # Contexte de build réduit au nécessaire
+├── Dockerfile.ui             # Image de l'interface de chat (+ Dockerfile.ui.dockerignore)
+├── assets/                   # Logo et favicon de l'interface
 ├── pyproject.toml / uv.lock  # Dépendances (gestionnaire uv)
 └── README.md                 # Installation et commandes
 ```
@@ -189,6 +194,26 @@ uv run python scripts/ask_api.py "Je cherche une pièce de théâtre, tu as des 
 ```
 
 Le délai d'attente (120 s) couvre le réveil de l'instance. En cas d'erreur, le code HTTP et le motif renvoyé par l'API sont affichés (jeton invalide, index absent, Mistral indisponible).
+
+## Interface de chat
+
+Fenêtre de chat **Gradio**, cliente de l'API au même titre que `ask_api.py` : elle envoie chaque question à `/ask` et affiche la réponse avec les sources cliquables. Une page de connexion protège l'accès : identifiant `demo-puls-events`, mot de passe `AUTH_TOKEN`.
+
+```bash
+# Interface locale sur http://127.0.0.1:7860, branchée sur l'API Render
+uv run python scripts/chat_ui.py
+# Branchée sur l'API locale (Bash)
+API_URL=http://localhost:8000 uv run python scripts/chat_ui.py
+```
+
+L'interface a sa propre image (groupe de dépendances `ui` uniquement) :
+
+```bash
+docker build -f Dockerfile.ui -t puls-events-ui .
+docker run --rm -p 7860:7860 --env-file .env puls-events-ui
+```
+
+Sur Render, c'est un second service Docker (*Dockerfile Path* : `./Dockerfile.ui`) avec la variable `AUTH_TOKEN`, et `API_URL` si l'API n'est pas sur l'URL par défaut.
 
 
 ## Évaluation

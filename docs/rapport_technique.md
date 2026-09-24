@@ -50,7 +50,9 @@ flowchart LR
     I --> IDX
     IDX -->|chargé au démarrage| CH
     CH -.->|recherche et génération| MI
-    USER -->|POST /ask| API
+    UI["chat_ui.py<br/>Gradio, conteneur séparé"]
+    USER -->|navigateur| UI
+    UI -->|POST /ask| API
 ```
 
 ```
@@ -67,6 +69,7 @@ P7/
 ├── scripts/
 │   ├── check_env.py          # Vérification des imports et de la clé API Mistral
 │   ├── ask_api.py            # Client en ligne de commande : question à l'API, réponse et sources mises en forme
+│   ├── chat_ui.py            # Interface de chat Gradio, cliente de l'API, avec page de connexion
 │   ├── benchmark_faiss.py    # Comparaison des algorithmes d'index Faiss (Flat, HNSW, IVF, PQ)
 │   └── eda_openagenda.ipynb  # Analyse exploratoire justifiant la collecte et le nettoyage
 ├── eval/
@@ -81,11 +84,13 @@ P7/
 ├── run.py                    # Lancement local de l'API après vérification de l'environnement
 ├── Dockerfile                # Image de l'API, index embarqué
 ├── .dockerignore             # Contexte de build réduit au nécessaire
+├── Dockerfile.ui             # Image de l'interface de chat (+ Dockerfile.ui.dockerignore)
+├── assets/                   # Logo et favicon de l'interface
 ├── pyproject.toml / uv.lock  # Dépendances (gestionnaire uv)
 └── README.md                 # Installation et commandes
 ```
 
-**Technologies** : `requests` et `pandas` pour la collecte et le nettoyage, LangChain pour les documents et la chaîne, `mistral-embed` pour les embeddings, Faiss (index plat) pour la recherche, `ministral-14b` pour la génération, FastAPI et Uvicorn pour l'API, Docker pour l'exécution, GitHub Actions et Render pour la vérification et le déploiement.
+**Technologies** : `requests` et `pandas` pour la collecte et le nettoyage, LangChain pour les documents et la chaîne, `mistral-embed` pour les embeddings, Faiss (index plat) pour la recherche, `ministral-14b` pour la génération, FastAPI et Uvicorn pour l'API, Gradio pour l'interface de chat, Docker pour l'exécution, GitHub Actions et Render pour la vérification et le déploiement.
 
 **Déroulement d'une question.** Le diagramme de séquence ci-dessous détaille les échanges. Trois appels à Mistral sont nécessaires : un premier pour repérer la période visée par la question, un deuxième pour la vectoriser, un troisième pour générer la réponse.
 
@@ -362,7 +367,7 @@ docker run --rm -p 8000:8000 --env-file .env puls-events
 
 | Choix | Raison |
 |---|---|
-| `uv sync --frozen --no-dev` | pytest, ruff et ragas restent hors de l'image |
+| `uv sync --frozen --no-default-groups` | pytest, ruff, ragas et Gradio restent hors de l'image |
 | Index `chunk_1000` embarqué (32 Mo) | Le conteneur répond dès le démarrage, sans reconstruction |
 | `USER app` (UID 1000) | Pas d'exécution en root |
 
@@ -388,6 +393,18 @@ Le service est en ligne sur <https://puls-events-api.onrender.com> (documentatio
 Sur l'instance gratuite Render (512 Mo), `/rebuild` provoque un `Ran out of memory` et le redémarrage de l'instance. Le conteneur fait un pic autour de 700 Mo lors de la reconstruction (JSON + dataframe + chunks).
 
 **Conséquence pour le POC** : `/rebuild` reste utilisable en local, où la mémoire n'est pas contrainte, mais pas sur l'instance de démonstration en ligne. Aucune donnée n'est perdue, l'instance redémarre sur l'index contenu dans l'image, qui est versionné et la mise à jour en production passe alors par une reconstruction locale, un commit et un redéploiement par la CI/CD.
+
+### 6.7 Interface de chat
+
+Pour la démonstration, [`scripts/chat_ui.py`](../scripts/chat_ui.py) fournit une fenêtre de chat **Gradio** (`gr.ChatInterface`) : chaque question part vers `/ask`, la réponse s'affiche en Markdown avec les sources en liens cliquables, et une erreur de l'API apparaît en bandeau plutôt que de bloquer la page.
+
+L'interface est un **client de l'API**, déployé comme un second service Render à partir de [`Dockerfile.ui`](../Dockerfile.ui) :
+
+| Choix | Raison |
+|---|---|
+| Service séparé plutôt que monté dans FastAPI | L'image de l'API est inchangée, et l'interface passe par `/ask` comme n'importe quel client |
+| Groupe de dépendances `ui` (`uv sync --only-group ui`) | Ni FAISS ni LangChain dans l'image : 133 Mo de RAM mesurés, loin des 512 Mo de l'instance |
+| Page de connexion Gradio (`auth=`) | Identifiant de démonstration, mot de passe `AUTH_TOKEN` : l'interface n'est pas ouverte à tous et ne consomme pas le quota Mistral sans jeton |
 
 ## 7. Évaluation et tests
 
@@ -532,7 +549,7 @@ Les trois modules les moins couverts le sont pour la même raison : leurs lignes
 - **Base vectorielle dédiée.** Faiss, imposé par le cahier des charges, est une bibliothèque de recherche de similarité et non une base de données : elle ignore les métadonnées, que LangChain gère à côté. Cet aspect est intéressant pour le POC car il permet d'embarquer l'index dans un conteneur autonome, sans service externe à déployer, mais le besoin de filtrage ne s'arrêtera pas aux dates : tarif, quartier, public et période sont autant de critères qu'un moteur comme Qdrant ou pgvector traiterait nativement, là où il faut ici les implémenter à la main.
 - **Instance dimensionnée** : volume de données suffisant et disponibilité.
 - **Jetons par client et limitation de débit**, au lieu d'un jeton unique partagé, pour tracer et plafonner la consommation.
-- **Observabilité** : latence, taux de refus et coût par question — les trois indicateurs qui signalent une dérive avant que les utilisateurs ne la remarquent.
+- **Observabilité** : latence, taux de refus et coût par question : les trois indicateurs qui signalent une dérive avant que les utilisateurs ne la remarquent.
 
 ## 9. Organisation du dépôt GitHub
 
