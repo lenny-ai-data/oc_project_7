@@ -30,7 +30,7 @@ LLM_MODEL = "ministral-14b-latest"
 TOP_K = 5
 
 # Chunks récupérés par recherche. Le filtre étant appliqué avant, tous sont valides.
-# Un événement occupant jusqu'à 18 chunks, 5 x 18 garantit TOP_K événements distincts
+# Un événement occupe au plus 18 chunks, arrondi à 20 : 5 x 20 garantit TOP_K événements
 K_CHUNKS = 100
 
 # Consignes données au LLM : rôle, règles et contexte
