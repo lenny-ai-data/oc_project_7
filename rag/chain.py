@@ -7,7 +7,6 @@ Usage : uv run python -m rag.chain "Ma question"
 
 import sys
 from datetime import date, datetime, timedelta
-from zoneinfo import ZoneInfo
 
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
@@ -15,7 +14,7 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_mistralai import ChatMistralAI
 
-from rag.index import INDEX_DIR, load_index
+from rag.index import INDEX_DIR, TIMEZONE, load_index
 
 # --- CONSTANTES ----------------------------------
 
@@ -29,9 +28,6 @@ TOP_K = 5
 
 # Candidats récupérés avant le filtre sur les dates (≈ 3 événement sur 4 sont passés)
 FETCH_K = 200
-
-# Fuseau de référence : le serveur peut tourner en UTC, les événements sont à Toulouse
-TIMEZONE = ZoneInfo("Europe/Paris")
 
 # Consignes données au LLM : rôle, règles et contexte
 SYSTEM_PROMPT = (

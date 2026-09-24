@@ -7,9 +7,12 @@ Usage :
 
 # --- IMPORT MODULES ----------------------------------
 
+import json
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
@@ -24,6 +27,12 @@ from rag.preprocess import preprocess, save_processed
 
 # Dossier de sauvegarde
 INDEX_DIR = Path(__file__).parent.parent / "data" / "index"
+
+# Date de vectorisation, écrite à la sauvegarde de l'index
+BUILD_INFO = "build_info.json"
+
+# Fuseau de référence
+TIMEZONE = ZoneInfo("Europe/Paris")
 
 # Modèle d'embedding Mistral (dim. 1024)
 EMBEDDING_MODEL = "mistral-embed"
@@ -55,10 +64,20 @@ def save_index(index: FAISS, path: Path = INDEX_DIR) -> None:
     Fichier .pkl textes et métadonnées    
     """
     index.save_local(str(path))
+    # La date de fichier ne survit pas à un git clone : on la trace
+    date_construction = {"built_at": datetime.now(TIMEZONE).date().isoformat()}
+    (path / BUILD_INFO).write_text(json.dumps(date_construction), encoding="utf-8")
 
 def load_index(path: Path = INDEX_DIR) -> FAISS:
     """Recharge un index sauvegardé associé au modèle d'embeddings."""
     return FAISS.load_local(str(path), get_embeddings(), allow_dangerous_deserialization=True)
+
+def built_at(path: Path = INDEX_DIR) -> str:
+    """Date de vectorisation de l'index, avec repli sur la date du fichier de vecteurs."""
+    info = path / BUILD_INFO
+    if info.exists():
+        return json.loads(info.read_text(encoding="utf-8"))["built_at"]
+    return datetime.fromtimestamp((path / "index.faiss").stat().st_mtime, tz=TIMEZONE).date().isoformat()
 
 def rebuild_index(name: str) -> FAISS:
     """Rejoue toute la chaîne (collecte, nettoyage, découpage, vectorisation) et sauvegarde l'index.

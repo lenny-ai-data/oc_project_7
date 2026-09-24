@@ -3,12 +3,13 @@
 # --- IMPORT MODULES ----------------------------------
 
 import os
+from datetime import datetime
 
 import pytest
 from dotenv import load_dotenv
 
 from rag.documents import METADATA_FIELDS, load_documents, split_documents
-from rag.index import CONFIGS, INDEX_DIR, load_index
+from rag.index import CONFIGS, INDEX_DIR, TIMEZONE, built_at, load_index
 
 # --- CONSTANTES ----------------------------------
 
@@ -33,3 +34,12 @@ def test_current_indexes():
         [doc] = index.similarity_search("Visite libre de la basilique Saint-Sernin", k=1)
         assert doc.metadata["title"] == "Visite libre de la basilique Saint-Sernin"
         assert set(doc.metadata) == set(METADATA_FIELDS)
+
+def test_built_at(tmp_path):
+    # Repli sur la date du fichier de vecteurs quand la date n'a pas été écrite
+    (tmp_path / "index.faiss").write_bytes(b"")
+    assert built_at(tmp_path) == datetime.now(TIMEZONE).date().isoformat()
+
+    # Date écrite à la sauvegarde : elle survit à un git clone, la date de fichier non
+    (tmp_path / "build_info.json").write_text('{"built_at": "2026-09-15"}', encoding="utf-8")
+    assert built_at(tmp_path) == "2026-09-15"

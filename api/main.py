@@ -10,24 +10,21 @@ import secrets
 import threading
 import time
 from contextlib import asynccontextmanager
-from datetime import date, datetime
+from datetime import date
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Security
 from fastapi.security import APIKeyHeader
 from pydantic import BaseModel, ConfigDict, Field
 
-from rag.chain import INDEX_NAME, LLM_MODEL, RAG, TIMEZONE, TOP_K
+from rag.chain import INDEX_NAME, LLM_MODEL, RAG, TOP_K
 from rag.collect import CITY, START_DATE
-from rag.index import EMBEDDING_MODEL, INDEX_DIR, rebuild_index
+from rag.index import EMBEDDING_MODEL, INDEX_DIR, built_at, rebuild_index
 
 # --- CONSTANTES ----------------------------------
 
 # MISTRAL_API_KEY et AUTH_TOKEN
 load_dotenv()
-
-# Fichier de vecteurs, dont la date de modification sert de date de construction de l'index
-INDEX_FILE = INDEX_DIR / INDEX_NAME / "index.faiss"
 
 # En-tête qui porte le jeton (bouton « Authorize » dans Swagger)
 TOKEN_HEADER = APIKeyHeader(name="X-Token", auto_error=False, description="Valeur de AUTH_TOKEN")
@@ -172,7 +169,7 @@ def metadata() -> Metadata:
         llm_model=LLM_MODEL,
         top_k=TOP_K,
         index_name=INDEX_NAME,
-        index_built_at=datetime.fromtimestamp(INDEX_FILE.stat().st_mtime, tz=TIMEZONE).date().isoformat(),
+        index_built_at=built_at(INDEX_DIR / INDEX_NAME),
     )
 
 @app.post("/ask", summary="Poser une question sur les événements")
