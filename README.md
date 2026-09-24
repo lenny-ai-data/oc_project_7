@@ -6,6 +6,40 @@ Stack : **LangChain**, base vectorielle **Faiss** et modèles **Mistral** (embed
 
 📄 Choix techniques, données et résultats : voir le [rapport technique](docs/rapport_technique.md).
 
+⏩ **Instance de démonstration en ligne** : <https://puls-events-api.onrender.com/docs> (compter ~1 min de réveil de l'instance).
+
+## Arborescence
+
+```
+P7/
+├── rag/                      # Logique métier, réutilisée par les scripts, l'API et les tests
+│   ├── collect.py            # Collecte des événements Open Agenda -> data/raw/
+│   ├── preprocess.py         # Nettoyage des événements -> data/processed/
+│   ├── documents.py          # Construction des Documents LangChain et découpage en chunks
+│   ├── index.py              # Vectorisation Mistral et index Faiss -> data/index/
+│   ├── chain.py              # Chaîne RAG : recherche, prompt et génération (classe RAG)
+│   └── evaluate.py           # Évaluation : exécution du jeu de test, hit@5, scores Ragas
+├── api/
+│   └── main.py               # API FastAPI : /health, /metadata, /ask, /rebuild
+├── scripts/
+│   ├── check_env.py          # Vérification des imports et de la clé API Mistral
+│   ├── benchmark_faiss.py    # Comparaison des algorithmes d'index Faiss (Flat, HNSW, IVF, PQ)
+│   └── eda_openagenda.ipynb  # Analyse exploratoire justifiant la collecte et le nettoyage
+├── eval/
+│   ├── test_set.json         # Jeu de test annoté (20 questions)
+│   ├── results/              # Réponses, sources, contextes et scores par index
+│   └── iterations.md         # Suivi des itérations d'amélioration
+├── tests/                    # Tests unitaires (pytest)
+├── docs/
+│   └── rapport_technique.md  # Ce rapport
+├── data/                     # Données générées (raw/, processed/, index/), seul l'index chunk_1000 est versionné
+├── .github/workflows/ci.yml  # Lint, tests, build de l'image, déploiement Render
+├── Dockerfile                # Image de l'API, index embarqué
+├── .dockerignore             # Contexte de build réduit au nécessaire
+├── pyproject.toml / uv.lock  # Dépendances (gestionnaire uv)
+└── README.md                 # Installation et commandes
+```
+
 ## Installation
 
 Prérequis : `uv`.
@@ -152,7 +186,7 @@ uv run python -m rag.evaluate run no_chunk
 uv run python -m rag.evaluate ragas no_chunk
 ```
 
-> Ragas 0.4.3 ne s'importe pas tel quel avec `langchain-community` 0.4 ([issue #2745](https://github.com/vibrantlabsai/ragas/issues/2745)). `rag/evaluate.py` applique un contournement avant l'import.
+Ragas 0.4.3 ne s'importe pas tel quel avec `langchain-community` 0.4 ([issue #2745](https://github.com/vibrantlabsai/ragas/issues/2745)). `rag/evaluate.py` applique un contournement avant l'import.
 
 ## Tests
 
