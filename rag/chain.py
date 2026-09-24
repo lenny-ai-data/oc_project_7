@@ -216,7 +216,7 @@ class RAG:
 # --- MAIN ----------------------------------
 
 if __name__ == "__main__":
-    question = sys.argv[1] if len(sys.argv) > 1 else "Je cherche un concert de jazz, tu as des idées ?"
+    question = sys.argv[1] if len(sys.argv) > 1 else "Je cherche une pièce de théâtre, tu as des idées ?"
     result = RAG().ask(question)
 
     print(f"Question : {question}\n")

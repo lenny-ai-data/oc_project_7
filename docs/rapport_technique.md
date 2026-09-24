@@ -66,6 +66,7 @@ P7/
 │   └── main.py               # API FastAPI : /health, /metadata, /ask, /rebuild
 ├── scripts/
 │   ├── check_env.py          # Vérification des imports et de la clé API Mistral
+│   ├── ask_api.py            # Client en ligne de commande : question à l'API, réponse et sources mises en forme
 │   ├── benchmark_faiss.py    # Comparaison des algorithmes d'index Faiss (Flat, HNSW, IVF, PQ)
 │   └── eda_openagenda.ipynb  # Analyse exploratoire justifiant la collecte et le nettoyage
 ├── eval/
