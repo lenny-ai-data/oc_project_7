@@ -60,6 +60,8 @@ EXTRACTION_PROMPT = (
     "Détermine si la question situe explicitement les événements dans le temps.\n"
     "Sans période : « je cherche un concert de jazz », « une expo à voir », « que faire avec des enfants ».\n"
     "Avec période : « ce week-end », « en octobre », « demain », « cet été ».\n"
+    "Donne toujours les deux bornes : un mois couvre tous ses jours, « en octobre » va du 1er au 31 octobre.\n"
+    "Sans année précisée, la période est la prochaine à venir : jamais une période déjà passée.\n"
     "N'extrais des dates que si situe_dans_le_temps est vrai.\n"
     "Question : {question}"
 )
@@ -76,7 +78,7 @@ class Periode(BaseModel):
 
     situe_dans_le_temps: bool = Field(description="Vrai UNIQUEMENT si la question situe explicitement les événements dans le temps")
     debut: date | None = Field(default=None, description="Premier jour, AAAA-MM-JJ, null si situe_dans_le_temps est faux")
-    fin: date | None = Field(default=None, description="Dernier jour, AAAA-MM-JJ, null si situe_dans_le_temps est faux")
+    fin: date | None = Field(default=None, description="Dernier jour inclus, AAAA-MM-JJ, toujours renseigné si situe_dans_le_temps est vrai (égal à debut pour un seul jour)")
 
 # --- FONCTIONS ----------------------------------
 
