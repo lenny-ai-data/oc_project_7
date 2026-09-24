@@ -16,14 +16,16 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
-# Code et index retenu
+# Utilisateur non privilégié, créé avant les copies
+RUN useradd --create-home --uid 1000 app
+
+# Code et index retenu. data/ appartient à app car c'est le seul dossier écrit
+# (par /rebuild) ; --chown pose le propriétaire à la copie, alors qu'un chown
+# after-coup recopierait les fichiers dans une couche supplémentaire.
 COPY rag/ rag/
 COPY api/ api/
-COPY data/index/chunk_1000/ data/index/chunk_1000/
+COPY --chown=app:app data/index/chunk_1000/ data/index/chunk_1000/
 
-# Exécution sans privilèges. 
-# data/ change de propriétaire car écrit (par /rebuild).
-RUN useradd --create-home --uid 1000 app && chown -R app:app /app/data
 USER app
 
 # Port du conteneur

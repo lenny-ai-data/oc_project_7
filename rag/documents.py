@@ -92,19 +92,25 @@ def split_documents(documents: list[Document], chunk_size: int | None, chunk_ove
 
 if __name__ == "__main__":
     documents = load_documents()
-    print(f"{len(documents)} documents construits\n")
+    # Statistiques
+    print(f"\n- {len(documents)} documents construits")
+    lengths = sorted(len(doc.page_content) for doc in documents)
+    print(f"- Longueur des textes : médiane {lengths[len(lengths) // 2]}, max {lengths[-1]} caractères\n")
 
-    # Visualisation d'un document
+    # Affichage d'un document
+    print("%" + "-" * 60)
+    print("% Exemple de document standardisé")
+    print("%" + "-" * 60 + "\n")
+
     print(documents[0].page_content)
     print("\nMétadonnées :", documents[0].metadata)
 
-    # Statistiques
-    lengths = sorted(len(doc.page_content) for doc in documents)
-    print(f"\nLongueur des textes : médiane {lengths[len(lengths) // 2]}, max {lengths[-1]} caractères")
-
     # Découpage
+    print("\n%" + "-" * 60)
+    print("% Exemple de chunks sur document long (chunk_size=1000)")
+    print("%" + "-" * 60 + "\n")
+
     chunks = split_documents(documents, chunk_size=1000, chunk_overlap=150)
-    print(f"\nDécoupage à 1000 caractères : {len(chunks)} chunks")
 
     # Exemple avec le plus long
     longest = max(documents, key=lambda doc: len(doc.page_content))
