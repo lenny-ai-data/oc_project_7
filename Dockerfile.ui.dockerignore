@@ -1,5 +1,4 @@
 # Contexte de Dockerfile.ui : tout est exclu sauf ce dont l'interface a besoin
-# (.env aussi : AUTH_TOKEN et API_URL sont fournis au lancement)
 *
 !pyproject.toml
 !uv.lock

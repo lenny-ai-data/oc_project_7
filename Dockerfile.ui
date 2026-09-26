@@ -2,10 +2,10 @@
 # Build : docker build -f Dockerfile.ui -t puls-events-ui .
 # Run   : docker run --rm -p 7860:7860 --env-file .env puls-events-ui
 
-# Même image de base que l'API
+# Image python avec uv
 FROM ghcr.io/astral-sh/uv:0.12.6-python3.13-trixie-slim
 
-# GRADIO_SERVER_NAME : écoute ouverte au réseau, sinon injoignable hors du conteneur
+# Bytecode précompilé et copie des paquets
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     PATH="/app/.venv/bin:$PATH" \
@@ -14,11 +14,11 @@ ENV UV_COMPILE_BYTECODE=1 \
 
 WORKDIR /app
 
-# Seulement le groupe ui : ni FAISS ni LangChain, le RAG tourne côté API
-# --no-cache : le cache de téléchargement de uv resterait dans l'image (~280 Mo)
+# Couche des dependances (groupe ui)
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --only-group ui --no-cache
 
+# Utilisateur non privilégié, créé avant les copies
 RUN useradd --create-home --uid 1000 app
 
 COPY scripts/chat_ui.py scripts/ask_api.py scripts/
@@ -26,7 +26,8 @@ COPY assets/ assets/
 
 USER app
 
+# Port du conteneur
 EXPOSE 7860
 
-# PORT fourni par l'hébergeur (lu par le script) ou 7860 en local
+# PORT fourni par l'hébergeur ou 7860 en local.
 CMD ["python", "scripts/chat_ui.py"]

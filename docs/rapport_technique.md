@@ -90,7 +90,7 @@ P7/
 └── README.md                 # Installation et commandes
 ```
 
-**Technologies** : `requests` et `pandas` pour la collecte et le nettoyage, LangChain pour les documents et la chaîne, `mistral-embed` pour les embeddings, Faiss (index plat) pour la recherche, `ministral-14b` pour la génération, FastAPI et Uvicorn pour l'API, Gradio pour l'interface de chat, Docker pour l'exécution, GitHub Actions et Render pour la vérification et le déploiement.
+**Stack** : **requests** et **pandas** pour la collecte et le nettoyage, **LangChain** pour les documents et la chaîne, `mistral-embed` pour les embeddings, **Faiss** (index plat) pour la recherche, `ministral-14b` pour la génération, **FastAPI** et **Uvicorn** pour l'API, **Gradio** pour l'interface de chat, **Docker** pour l'exécution, **GitHub Actions** et **Render** pour la CI/CD.
 
 **Déroulement d'une question.** Le diagramme de séquence ci-dessous détaille les échanges. Trois appels à Mistral sont nécessaires : un premier pour repérer la période visée par la question, un deuxième pour la vectoriser, un troisième pour générer la réponse.
 
@@ -360,16 +360,12 @@ Les messages d'erreur ne révèlent que le type de l'exception, jamais le messag
 
 Le [`Dockerfile`](../Dockerfile) part de l'image `uv`, qui épingle uv et Python 3.13 dans un seul tag. Les dépendances sont installées **avant** la copie du code : tant qu'`uv.lock` ne change pas, Docker réutilise cette couche et une modification du code ne relance pas l'installation.
 
+L'index `chunk_1000` est embarqué (32 Mo) dans l'image, ce qui permet d'avoir un service directement opérationnel, sans reconstruction.
+
 ```bash
 docker build -t puls-events .
 docker run --rm -p 8000:8000 --env-file .env puls-events
 ```
-
-| Choix | Raison |
-|---|---|
-| `uv sync --frozen --no-default-groups` | pytest, ruff, ragas et Gradio restent hors de l'image |
-| Index `chunk_1000` embarqué (32 Mo) | Le conteneur répond dès le démarrage, sans reconstruction |
-| `USER app` (UID 1000) | Pas d'exécution en root |
 
 **Taille de l'image : 1,2 Go**. `chown -R` restreint à `data/`, le seul dossier ré-écrit.
 
@@ -388,23 +384,21 @@ Les tests tournent **sans clé Mistral ni données brutes** : ceux qui en dépen
 
 #### Déploiement Render
 
-Le service est en ligne sur <https://puls-events-api.onrender.com> (documentation interactive sur `/docs`). Il s'agit d'un service **Render** de type Docker. C'est le job `deploiement` qui appelle le crochet de déploiement, avec le SHA en paramètre pour déployer le commit vérifié. La vérification finale interroge `/health` jusqu'à y lire la révision attendue, puis exige `status: ok`.
+L'API est en ligne sur <https://puls-events-api.onrender.com> (documentation interactive sur `/docs`). Il s'agit d'un service **Render** de type Docker. L'interface de chat est un second service Render, présenté en [6.7](#67-interface-de-chat). C'est le job `deploiement` qui appelle le crochet de déploiement, avec le SHA en paramètre pour déployer le commit vérifié. La vérification finale interroge `/health` jusqu'à y lire la révision attendue, puis exige `status: ok`.
 
 Sur l'instance gratuite Render (512 Mo), `/rebuild` provoque un `Ran out of memory` et le redémarrage de l'instance. Le conteneur fait un pic autour de 700 Mo lors de la reconstruction (JSON + dataframe + chunks).
 
-**Conséquence pour le POC** : `/rebuild` reste utilisable en local, où la mémoire n'est pas contrainte, mais pas sur l'instance de démonstration en ligne. Aucune donnée n'est perdue, l'instance redémarre sur l'index contenu dans l'image, qui est versionné et la mise à jour en production passe alors par une reconstruction locale, un commit et un redéploiement par la CI/CD.
+**Conséquence pour le POC** : `/rebuild` reste utilisable en local, où la mémoire n'est pas contrainte, mais pas sur l'instance de démonstration en ligne.
 
 ### 6.7 Interface de chat
 
-Pour la démonstration, [`scripts/chat_ui.py`](../scripts/chat_ui.py) fournit une fenêtre de chat **Gradio** (`gr.ChatInterface`) : chaque question part vers `/ask`, la réponse s'affiche en Markdown avec les sources en liens cliquables, et une erreur de l'API apparaît en bandeau plutôt que de bloquer la page.
+Pour la démonstration, [`scripts/chat_ui.py`](../scripts/chat_ui.py) fournit une fenêtre de chat **Gradio** (`gr.ChatInterface`) : chaque question part vers `/ask`, la réponse s'affiche en Markdown avec les sources en liens cliquables.
 
-L'interface est un **client de l'API**, déployé comme un second service Render à partir de [`Dockerfile.ui`](../Dockerfile.ui) :
+L'interface est en ligne sur <https://puls-events-chat.onrender.com> (identifiants communiqués séparément). C'est un **client de l'API**, déployé comme un second service Render de type Docker à partir de [`Dockerfile.ui`](../Dockerfile.ui).
 
-| Choix | Raison |
-|---|---|
-| Service séparé plutôt que monté dans FastAPI | L'image de l'API est inchangée, et l'interface passe par `/ask` comme n'importe quel client |
-| Groupe de dépendances `ui` (`uv sync --only-group ui`) | Ni FAISS ni LangChain dans l'image : 133 Mo de RAM mesurés, loin des 512 Mo de l'instance |
-| Page de connexion Gradio (`auth=`) | Identifiant de démonstration, mot de passe `AUTH_TOKEN` : l'interface n'est pas ouverte à tous et ne consomme pas le quota Mistral sans jeton |
+On fait le choix d'un service séparé plutôt que monté dans une route FastAPI, plus représentatif d'une architecture standard, l'interface passe par `/ask` comme n'importe quel client.
+
+Une page de connexion Gradio protège l'UI avec un identifiant de démonstration et un mot de passe.
 
 ## 7. Évaluation et tests
 
@@ -447,7 +441,7 @@ Métriques utilisées (juge `ministral-14b`) :
 - **Context precision** : Le juge note l'utilité de chaque contexte par rapport à la référence
 - **Context recall** : Le juge vérifie chaque phrase de la référence dans les contextes
 
-**Similarité sémantique écartée.** Comparer le vecteur de la réponse à celui de la référence mesure une proximité de *formulation*, pas une justesse de *contenu*. Sur les questions ouvertes, où des dizaines d'événements conviennent, une réponse parfaitement valable mais construite sur d'autres événements que ceux cités en exemple obtiendrait un score bas. Le hit@5 vérifie que les bons événements sont retrouvés et Ragas que la réponse s'appuie sur eux : les deux répondent à la question « la réponse a-t-elle le même sens et les mêmes informations que la référence ? » sans ce biais.
+On a écarté la similarité sémantique qui mesure surtout une proximité de formulation plus que de contenu, moins adaptée à évaluer des questions très ouvertes où des dizaines d'événements conviennent comme c'est le cas ici. Le hit@5 vérifie que les bons événements sont retrouvés et Ragas que la réponse s'appuie sur eux : les deux répondent à la question « la réponse a-t-elle le même sens et les mêmes informations que la référence ? » sans ce biais.
 
 ### 7.3 Itérations d'amélioration
 
@@ -529,7 +523,43 @@ uv run pytest --cov --cov-report=term-missing
 
 Les trois modules les moins couverts le sont pour la même raison : leurs lignes manquantes **appellent un service externe**. Les tester en automatique supposerait soit de simuler les réponses d'Open Agenda et de Mistral, soit de payer un appel réel à chaque exécution de la CI. Ces chemins ont été vérifiés manuellement, et de bout en bout par la reconstruction complète lancée dans le conteneur (§6.6). Le rapport de couverture HTML est publié en artefact à chaque exécution de la CI.
 
-## 8. Recommandations et perspectives
+## 8. Ordre de grandeur des coûts attendus
+
+Les estimations partent de la consommation réelle du projet et des tarifs publics constatés en septembre 2026.
+
+### 8.1 Embeddings
+
+`mistral-embed` coûte **0,10 $ par million de tokens**. Sur l'index `chunk_1000`, un vecteur compte en moyenne **~254 tokens**, et `MistralAIEmbeddings` en regroupe **~62 par requête** (lots de 16 000 tokens). Au total, le projet a consommé 13,75 M tokens en 1 720 requêtes, soit l'équivalent de 4 à 5 reconstructions complètes des deux index.
+
+| Vecteurs | Tokens | Requêtes | Coût d'une reconstruction | Reconstruction quotidienne (30 j) |
+|---|---|---|---|---|
+| 6 273 (POC) | 1,6 M | ~100 | ~0,16 $ | ~5 $ |
+| 10 000 | 2,5 M | ~160 | ~0,25 $ | ~8 $ |
+| 100 000 | 25 M | ~1 600 | ~2,5 $ | ~76 $ |
+| 500 000 | 127 M | ~8 000 | ~13 $ | ~380 $ |
+
+La vectorisation d'une question (une requête, une vingtaine de tokens) est négligeable. **Le coût des embeddings dépend donc de la fréquence de rafraîchissement de la base, pas du nombre d'utilisateurs.**
+
+À l'échelle du POC, reconstruire tout l'index à chaque fois reste acceptable. Au-delà, à 500 k vecteurs, une reconstruction quotidienne revient à ~380 $ par mois, alors qu'une journée ne modifie qu'une faible part des événements.
+
+C'est ce qui motive une **mise à jour incrémentale** : on ne vectorise que les événements ajoutés ou modifiés depuis la dernière collecte, repérés par leur `uid` et leur date de mise à jour, et on supprime les événements passés. Le coût devient alors proportionnel au volume de changements, et non à la taille de la base.
+
+### 8.2 Génération
+
+Sur le projet, `ministral-14b` a reçu 1 100 requêtes pour 1,25 M tokens en entrée et 0,25 M en sortie, soit ~1 140 et ~230 tokens par appel. Chaque question déclenche deux appels (repérage de la période, puis génération), soit **~2 270 tokens en entrée et ~450 en sortie**. Cette moyenne inclut les appels du juge Ragas : c'est un ordre de grandeur, pas une mesure par question.
+
+| Modèle | Prix entrée / sortie ($/M tokens) | Pour 1 000 questions |
+|---|---|---|
+| `ministral-14b` (retenu) | 0,20 / 0,20 | **~0,55 $** |
+| Mistral Small 4 | 0,15 / 0,60 | ~0,60 $ |
+| Mistral Medium 3.5 | 1,50 / 7,50 | ~6,80 $ |
+| Claude Opus 5.5 (modèle frontière) | 4,00 / 20,00 | ~18 $ |
+
+L'entrée pèse ~5 fois plus que la sortie en tokens, du fait du contexte RAG (cinq événements par question). 
+
+Un modèle frontière multiplie le coût par ~33, d'où l'intérêt de prendre le modèle le plus sobre répondant au besoin, et non pas le plus performant par défaut.
+
+## 9. Recommandations et perspectives
 
 **Ce qui fonctionne.** Le POC atteint 100 % de hit@5 et une *faithfulness* de 0,86 à 0,96 selon les exécutions sur le jeu annoté. Surtout, il refuse honnêtement : l'assistant ne recommande jamais d'événement absent de l'index, dit quand il ne sait pas, et recadre les tentatives d'injection du jeu de test. La chaîne complète est reproductible avec un index reconstructible en deux minutes, API conteneurisée et vérification automatique à chaque push.
 
@@ -541,8 +571,9 @@ Les trois modules les moins couverts le sont pour la même raison : leurs lignes
 **Améliorations prioritaires.**
 
 1. **Recherche hybride** (vecteurs et mots-clés) : éviter que cinq événements intitulés « Concert » masquent un concert de jazz.
+2. **Evaluation du modèle optimal** : le modèle proposé semble répondre au besoin, il resterait intéressant d'en évaluer de plus performant et de rapporter le gain de performance au coût associé pour faire un choix optimal.
 2. **Historique de conversation** pour permettre un échange plus complet avec l'utilisateur.
-3. **Rafraîchissement planifié** plutôt qu'un endpoint appelé à la main : une tâche quotidienne qui reconstruit l'index chaque nuit et le met en service. L'évaluation devient alors un test de non-régression.
+3. **Rafraîchissement planifié incrémental** plutôt qu'un endpoint appelé à la main : une tâche quotidienne qui complète l'index chaque nuit et le met en service. L'évaluation devient alors un test de non-régression.
 
 **Passage en production.**
 
@@ -551,7 +582,7 @@ Les trois modules les moins couverts le sont pour la même raison : leurs lignes
 - **Jetons par client et limitation de débit**, au lieu d'un jeton unique partagé, pour tracer et plafonner la consommation.
 - **Observabilité** : latence, taux de refus et coût par question : les trois indicateurs qui signalent une dérive avant que les utilisateurs ne la remarquent.
 
-## 9. Organisation du dépôt GitHub
+## 10. Organisation du dépôt GitHub
 
 L'arborescence et le rôle de chaque dossier figurent au point 2. Le dépôt suit un workflow léger, sans *pull request* :
 
